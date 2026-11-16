@@ -231,11 +231,30 @@ function Home() {
           </div>
         </section>
 
+        <section className="bg-paper px-6 pt-20">
+          <div className="mx-auto max-w-5xl">
+            <article
+              data-reveal
+              className="rounded-3xl bg-night px-8 py-10 text-snow sm:px-12 sm:py-12"
+            >
+              <h2 className="max-w-3xl text-4xl font-semibold leading-tight sm:text-5xl">
+                Стоимость участия — 15{"\u00A0"}000 тенге с человека
+              </h2>
+              <p className="mt-4 max-w-xl text-base leading-normal text-mist">
+                Один билет на воркшоп. Бонусы ниже уже входят в эту сумму.
+              </p>
+              <div className="mt-8">
+                <BookLink>Забронировать место</BookLink>
+              </div>
+            </article>
+          </div>
+        </section>
+
         <section className="bg-paper px-6 py-20">
           <div className="mx-auto max-w-5xl">
-            <h2 data-reveal className="text-4xl font-semibold text-ink sm:text-5xl">БОНУС</h2>
-            <p data-reveal className="mt-6 text-3xl font-semibold text-ink sm:text-4xl">
-              15{"\u00A0"}000 тенге с человека
+            <h2 data-reveal className="text-4xl font-semibold text-ink sm:text-5xl">Бонус</h2>
+            <p data-reveal className="mt-4 max-w-2xl text-lg leading-normal text-quiet">
+              Включено в стоимость. Участник получает это дополнительно к воркшопу.
             </p>
             <div className="mt-8 grid gap-4 md:grid-cols-2">
               <article
