@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { publicAsset } from "@/lib/public-asset";
 
 export const Route = createFileRoute("/")({ component: Home });
 
@@ -22,19 +23,19 @@ const speakers = [
   {
     name: "Жасулан Алимбаев",
     role: "Маркетолог, 5 лет опыта, работал с бюджетами от 10 млн тенге в месяц, специализируется на рекламных кабинетах и работе с блогерами.",
-    photo: "/speakers/zhasulan.jpg",
+    photo: publicAsset("/speakers/zhasulan.jpg"),
     position: "object-top",
   },
   {
     name: "Сергей Чиняев",
     role: "Специалист по автоматизации обработки заявок. Разбирает NextBot, WhatsApp, Direct и CRM: amoCRM и Битрикс24.",
-    photo: "/speakers/sergey.jpg",
+    photo: publicAsset("/speakers/sergey.jpg"),
     position: "object-top",
   },
   {
     name: "Оксана Згардан",
     role: "Бухгалтер, 5 лет стажа, высшее экономическое образование, диплом ACCA DipIFR. Обучение финансов и бухгалтерии на реальных рабочих задачах.",
-    photo: "/speakers/oksana-portrait.jpg",
+    photo: publicAsset("/speakers/oksana-portrait.jpg"),
     position: "object-top",
   },
 ];
@@ -139,22 +140,22 @@ function Home() {
               {[0, 1].map((copy) => (
                 <div key={copy} className="flex items-center" aria-hidden={copy === 1}>
                   <img
-                    src="/partners/growth-point-light.png"
+                    src={publicAsset("/partners/growth-point-light.png")}
                     alt={copy === 0 ? "Growth point" : ""}
                     className="h-7 w-auto shrink-0 pr-12 sm:h-8"
                   />
                   <img
-                    src="/partners/astana-hub-light.png"
+                    src={publicAsset("/partners/astana-hub-light.png")}
                     alt={copy === 0 ? "Astana Hub" : ""}
                     className="h-6 w-auto shrink-0 pr-12 sm:h-7"
                   />
                   <img
-                    src="/partners/karaganda.png"
+                    src={publicAsset("/partners/karaganda.png")}
                     alt={copy === 0 ? "Караганда" : ""}
                     className="h-12 w-auto shrink-0 pr-12 sm:h-14"
                   />
                   <img
-                    src="/partners/legal.png"
+                    src={publicAsset("/partners/legal.png")}
                     alt={copy === 0 ? "Палата юридических консультантов" : ""}
                     className="h-9 w-auto shrink-0 pr-12 sm:h-10"
                   />

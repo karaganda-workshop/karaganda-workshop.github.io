@@ -1,6 +1,7 @@
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
+import { publicAsset } from "@/lib/public-asset";
 import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({
@@ -17,10 +18,12 @@ export const Route = createRootRoute({
       { name: "theme-color", content: "#000000" },
     ],
     links: [
-      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      { rel: "icon", type: "image/svg+xml", href: publicAsset("/favicon.svg") },
       { rel: "stylesheet", href: appCss },
-      { rel: "manifest", href: "/__grok/manifest.webmanifest" },
-      { rel: "apple-touch-icon", href: "/__grok/icon-180.png" },
+      ...(import.meta.env.BASE_URL === "/"
+        ? [{ rel: "manifest", href: "/__grok/manifest.webmanifest" }]
+        : []),
+      { rel: "apple-touch-icon", href: publicAsset("/__grok/icon-180.png") },
     ],
   }),
   component: () => (

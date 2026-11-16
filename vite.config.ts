@@ -142,10 +142,22 @@ function authPopupPlugin(): Plugin {
   };
 }
 
+// GitHub Pages project site. Dev and the Vercel build stay at `/`.
+const pagesBuild = process.env.GITHUB_PAGES === "1";
+const pagesBase = "/workshop-karaganda/";
+
 // `0.0.0.0:8080` is the live-preview contract — don't change host/port.
 // The dev server starts once `src/router.tsx` and `src/routes/` exist — see
 // AGENTS.md § "First scaffold".
 export default defineConfig(({ command, isPreview }) => ({
+  base: pagesBuild ? pagesBase : "/",
+  ...(pagesBuild
+    ? {
+        environments: {
+          client: { build: { outDir: ".output/public" } },
+        },
+      }
+    : {}),
   server: {
     host: "0.0.0.0",
     port: 8080,
@@ -166,8 +178,20 @@ export default defineConfig(({ command, isPreview }) => ({
     // PWA head + ?install=1 tutorial page; runs before Start/Nitro.
     grokPwaPlugin(),
     tailwindcss(),
-    tanstackStart(),
-    ...(command === "build" || isPreview
+    tanstackStart(
+      pagesBuild
+        ? {
+            prerender: {
+              enabled: true,
+              crawlLinks: false,
+            },
+          }
+        : undefined,
+    ),
+    // Pages is a prerendered static site. Nitro's static preset cannot bundle
+    // the platform install-page import, so that build skips Nitro and emits the
+    // client directory directly. Dev and Vercel keep the vercel preset.
+    ...(!pagesBuild && (command === "build" || isPreview)
       ? [
           nitro({
             preset: "vercel",
