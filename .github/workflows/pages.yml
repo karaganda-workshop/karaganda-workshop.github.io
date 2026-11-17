@@ -39,12 +39,12 @@ jobs:
           GITHUB_PAGES: "1"
 
       - name: Disable Jekyll
-        run: touch .output/public/.nojekyll
+        run: touch dist/.nojekyll
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .output/public
+          path: dist
 
   deploy:
     needs: build
