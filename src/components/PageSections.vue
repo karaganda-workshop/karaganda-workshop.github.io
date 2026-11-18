@@ -91,8 +91,8 @@ import { afterSeminar, bonuses, facts, partners, price, results, speakers, tools
             class="flex flex-col justify-center rounded-2xl border border-rule bg-snow/70 p-6 sm:p-8"
           >
             <p class="text-lg leading-relaxed text-graphite/75 sm:text-xl">
-              Искусственный интеллект и автоматизация уже вошли в бизнес: реклама, обработка
-              заявок, аналитика и учёт всё чаще работают
+              Искусственный интеллект и автоматизация уже вошли в бизнес: реклама, обработка заявок,
+              аналитика и учёт всё чаще работают
               <mark class="key-mark">почти без участия человека</mark>. Те, кто внедряет это
               первыми, забирают клиентов и экономят часы, а большинство предпринимателей
               <mark class="key-mark">не успевают за переменами</mark>.
@@ -133,8 +133,8 @@ import { afterSeminar, bonuses, facts, partners, price, results, speakers, tools
               Каждый день на счету
             </p>
             <p class="mt-2 text-sm leading-normal text-quiet sm:text-base">
-              Конкуренты, которые настроили рекламу и автоматизацию раньше, платят за клиента
-              меньше и растут быстрее.
+              Конкуренты, которые настроили рекламу и автоматизацию раньше, платят за клиента меньше
+              и растут быстрее.
             </p>
           </div>
         </div>
@@ -276,26 +276,17 @@ import { afterSeminar, bonuses, facts, partners, price, results, speakers, tools
         <ul class="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
           <li
             v-for="(item, index) in afterSeminar"
-            :key="item"
+            :key="item.text"
             data-reveal
             :data-delay="index * 90"
-            class="flex flex-col rounded-2xl border border-rule bg-snow/70 p-5 transition-colors duration-300 hover:border-graphite/20 hover:bg-snow sm:p-6"
+            class="group flex flex-col rounded-2xl border border-rule bg-snow/70 p-5 transition-colors duration-300 hover:border-graphite/20 hover:bg-snow sm:p-6"
           >
-            <span
-              class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-peach-strong"
-              aria-hidden="true"
-            >
-              <svg viewBox="0 0 20 20" class="h-5 w-5" fill="none">
-                <path
-                  d="M5 10.5 L8.5 14 L15 6.5"
-                  stroke="#fff"
-                  stroke-width="2.2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </span>
-            <p class="mt-5 text-base leading-snug text-graphite/85 sm:text-lg">{{ item }}</p>
+            <FactIcon
+              :kind="item.icon"
+              class="after-icon -ml-1 h-16 w-auto self-start sm:h-20"
+              :style="{ animationDelay: index * 90 + 200 + 'ms' }"
+            />
+            <p class="mt-5 text-base leading-snug text-graphite/85 sm:text-lg">{{ item.text }}</p>
           </li>
         </ul>
       </div>

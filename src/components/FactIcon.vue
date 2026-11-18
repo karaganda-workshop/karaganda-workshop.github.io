@@ -18,7 +18,17 @@ import {
 } from "@/scene/iso";
 
 export type FactIconKind =
-  "calendar" | "pin" | "clock" | "layers" | "target" | "gears" | "calculator" | "consult" | "docs";
+  | "calendar"
+  | "pin"
+  | "clock"
+  | "layers"
+  | "target"
+  | "gears"
+  | "calculator"
+  | "consult"
+  | "docs"
+  | "chart"
+  | "bot";
 
 const props = defineProps<{ kind: FactIconKind }>();
 
@@ -158,6 +168,46 @@ const faces = computed<Face[]>(() => {
         ...box(16, 14, 4, 14, 16, 8),
         ...cylinder(36, 22, 4, 4.5, 12),
         ...cylinder(36, 22, 16, 3.6, 5, "peach"),
+      ];
+    }
+    case "chart": {
+      // Analytics: three growing bars, the tallest one the accent.
+      return [
+        ...tile(),
+        ...box(9, 26, 4, 7, 7, 9),
+        ...box(19, 26, 4, 7, 7, 17),
+        ...box(29, 26, 4, 7, 7, 26, "peach"),
+      ];
+    }
+    case "bot": {
+      // AI: a little robot head with glowing eyes and an antenna.
+      const frontX = 32;
+      return [
+        ...tile(),
+        ...cylinder(22, 22, 4, 3, 6),
+        ...box(12, 12, 10, 20, 20, 16),
+        face(
+          [
+            [frontX, 16, 19],
+            [frontX, 19, 19],
+            [frontX, 19, 22],
+            [frontX, 16, 22],
+          ],
+          TONES.peach.right,
+          { strokeWidth: 0.6 },
+        ),
+        face(
+          [
+            [frontX, 24, 19],
+            [frontX, 27, 19],
+            [frontX, 27, 22],
+            [frontX, 24, 22],
+          ],
+          TONES.peach.right,
+          { strokeWidth: 0.6 },
+        ),
+        ...cylinder(22, 22, 26, 1, 4),
+        ...cylinder(22, 22, 30, 2.5, 2.5, "peach"),
       ];
     }
     case "docs": {

@@ -206,3 +206,29 @@
     opacity: 1;
   }
 }
+
+/* "После семинара вы": each isometric icon plays one short settle when its
+   card scrolls in — gentle rise + scale, staggered, then it rests. */
+.after-icon {
+  transform-origin: 50% 85%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal].is-in .after-icon {
+    animation: after-icon-settle 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+@keyframes after-icon-settle {
+  from {
+    opacity: 0;
+    transform: translateY(9px) scale(0.9);
+  }
+  60% {
+    transform: translateY(0) scale(1.04);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
