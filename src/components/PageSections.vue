@@ -212,7 +212,7 @@ import { bonuses, facts, partners, price, results, speakers, tools } from "@/con
           <template v-for="(block, index) in tools" :key="block.title">
             <li
               data-reveal
-              :data-delay="index * 120"
+              :data-delay="index * 280"
               class="group flex flex-col rounded-2xl border border-rule bg-snow/70 p-5 transition-colors duration-300 hover:border-graphite/20 hover:bg-snow sm:p-6 lg:min-w-0 lg:flex-1"
             >
               <FactIcon
@@ -239,21 +239,21 @@ import { bonuses, facts, partners, price, results, speakers, tools } from "@/con
             <li
               v-if="index < tools.length - 1"
               data-reveal
-              :data-delay="index * 120 + 60"
+              :data-delay="index * 280 + 140"
               class="flex shrink-0 items-center justify-center py-1 lg:w-12 lg:py-0"
               aria-hidden="true"
             >
               <span class="rotate-90 lg:rotate-0">
-                <svg viewBox="0 0 26 12" class="flow-glyph h-5 w-10 lg:h-6 lg:w-12">
-                  <path d="M3 2 L8 6 L3 10" />
-                  <path d="M11 2 L16 6 L11 10" />
-                  <path d="M19 2 L24 6 L19 10" />
+                <svg viewBox="0 0 48 16" class="flow-arrow h-4 w-12">
+                  <path class="flow-line" d="M3 8 H40" />
+                  <path class="flow-dash" d="M3 8 H40" />
+                  <path class="flow-head" d="M33 3 L41 8 L33 13" />
                 </svg>
               </span>
             </li>
           </template>
         </ul>
-        <div data-reveal class="mt-8 flex justify-center sm:mt-10">
+        <div data-reveal data-delay="840" class="mt-8 flex justify-center sm:mt-10">
           <p
             class="max-w-xl rounded-full border border-peach-line bg-peach-soft/50 px-5 py-2.5 text-center text-sm font-medium text-peach-ink sm:px-6 sm:text-base"
           >

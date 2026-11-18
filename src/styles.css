@@ -153,41 +153,56 @@
   }
 }
 
-/* Animated flow connector between the "tools" cards: three chevrons that
-   light up in sequence to show the direction Маркетинг → ИИ → Финансы. */
-.flow-glyph path {
+/* Vector arrow connecting the "tools" cards (Маркетинг → ИИ → Финансы):
+   a line with a running dash that flows toward the head, plus a solid
+   arrowhead — in the site's line-art style. */
+.flow-arrow {
   fill: none;
   stroke: var(--color-peach-strong);
-  stroke-width: 2.4;
+  stroke-width: 2.2;
   stroke-linecap: round;
   stroke-linejoin: round;
-  opacity: 0.3;
+}
+.flow-arrow .flow-line {
+  opacity: 0.35;
+}
+.flow-arrow .flow-dash {
+  stroke-dasharray: 5 9;
+}
+.flow-arrow .flow-head {
+  opacity: 0.9;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .flow-glyph path {
-    animation: flow-pulse 1.8s ease-in-out infinite;
+  .flow-arrow .flow-dash {
+    animation: flow-dash 1.1s linear infinite;
   }
-  .flow-glyph path:nth-child(2) {
-    animation-delay: 0.22s;
-  }
-  .flow-glyph path:nth-child(3) {
-    animation-delay: 0.44s;
+  .flow-arrow .flow-head {
+    animation: flow-pulse 1.6s ease-in-out infinite;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .flow-glyph path {
-    opacity: 0.55;
+  .flow-arrow .flow-dash {
+    display: none;
+  }
+  .flow-arrow .flow-line {
+    opacity: 0.6;
+  }
+}
+
+@keyframes flow-dash {
+  to {
+    stroke-dashoffset: -14;
   }
 }
 
 @keyframes flow-pulse {
   0%,
   100% {
-    opacity: 0.25;
+    opacity: 0.4;
   }
-  40% {
+  45% {
     opacity: 1;
   }
 }
