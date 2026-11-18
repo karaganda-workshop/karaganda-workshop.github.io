@@ -43,6 +43,36 @@ export const results = [
   },
 ] as const;
 
+export const tools = [
+  {
+    title: "Маркетинг",
+    icon: "target",
+    groups: [
+      { label: "Автоматизация маркетинга", items: ["GPT", "Claude Cowork"] },
+      { label: "Рекламные кабинеты", items: ["Meta Ads", "Google Ads"] },
+      { label: "Аналитика", items: ["Google Analytics", "Яндекс Метрика"] },
+    ],
+  },
+  {
+    title: "Применение ИИ",
+    icon: "gears",
+    groups: [
+      { label: "Автоматизация заявок", items: ["NextBot", "WhatsApp", "Instagram"] },
+      { label: "CRM", items: ["AmoCRM", "Bitrix24"] },
+    ],
+  },
+  {
+    title: "Финансы",
+    icon: "calculator",
+    groups: [
+      {
+        label: "Порядок в деньгах",
+        items: ["Автоматизация финансов", "Ясность в налогах", "Документы к закрытию года"],
+      },
+    ],
+  },
+] as const;
+
 export interface Speaker {
   name: string;
   role: string;

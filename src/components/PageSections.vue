@@ -3,7 +3,7 @@
 import BookLink from "@/components/BookLink.vue";
 import FactIcon from "@/components/FactIcon.vue";
 import TextAnimate from "@/components/ui/TextAnimate.vue";
-import { bonuses, facts, partners, price, results, speakers } from "@/content";
+import { bonuses, facts, partners, price, results, speakers, tools } from "@/content";
 </script>
 
 <template>
@@ -188,6 +188,55 @@ import { bonuses, facts, partners, price, results, speakers } from "@/content";
             >Забронировать место</BookLink
           >
         </div>
+      </div>
+      <span class="hero-plus hero-plus-bottom -left-[5px] bottom-0" aria-hidden="true" />
+      <span class="hero-plus hero-plus-bottom -right-[5px] bottom-0" aria-hidden="true" />
+    </div>
+    <div class="border-t border-rule" />
+  </section>
+
+  <section class="overflow-x-clip bg-stone text-graphite" aria-labelledby="tools-title">
+    <div class="relative mx-auto max-w-6xl border-x border-rule">
+      <TextAnimate
+        id="tools-title"
+        as="h2"
+        animation="slideUp"
+        by="word"
+        :duration="0.4"
+        class="px-4 pt-12 pb-10 text-3xl font-medium leading-tight sm:px-6 sm:pt-16 sm:pb-12 sm:text-5xl"
+      >
+        Инструменты, которые вы освоите
+      </TextAnimate>
+      <div class="border-t border-rule px-4 py-12 sm:px-6 sm:py-16">
+        <ul class="grid gap-3 sm:gap-4 lg:grid-cols-3">
+          <li
+            v-for="(block, index) in tools"
+            :key="block.title"
+            data-reveal
+            :data-delay="index * 80"
+            class="group flex flex-col rounded-2xl border border-rule bg-snow/70 p-5 transition-colors duration-300 hover:border-graphite/20 hover:bg-snow sm:p-6"
+          >
+            <FactIcon
+              :kind="block.icon"
+              class="-ml-1 h-16 w-auto self-start transition-transform duration-500 ease-out group-hover:-translate-y-1 sm:h-20"
+            />
+            <h3 class="mt-5 text-xl font-medium leading-tight sm:text-2xl">{{ block.title }}</h3>
+            <div class="mt-5 flex flex-col gap-4">
+              <div v-for="group in block.groups" :key="group.label">
+                <p class="text-xs tracking-wide text-quiet uppercase">{{ group.label }}</p>
+                <ul class="mt-2 flex flex-wrap gap-2">
+                  <li
+                    v-for="item in group.items"
+                    :key="item"
+                    class="rounded-full border border-peach-line/70 bg-peach-soft/40 px-3 py-1.5 text-sm leading-none font-medium text-peach-ink"
+                  >
+                    {{ item }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </li>
+        </ul>
       </div>
       <span class="hero-plus hero-plus-bottom -left-[5px] bottom-0" aria-hidden="true" />
       <span class="hero-plus hero-plus-bottom -right-[5px] bottom-0" aria-hidden="true" />
