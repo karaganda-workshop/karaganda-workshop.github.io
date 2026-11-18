@@ -3,7 +3,7 @@
 import BookLink from "@/components/BookLink.vue";
 import FactIcon from "@/components/FactIcon.vue";
 import TextAnimate from "@/components/ui/TextAnimate.vue";
-import { bonuses, facts, partners, price, results, speakers, tools } from "@/content";
+import { afterSeminar, bonuses, facts, partners, price, results, speakers, tools } from "@/content";
 </script>
 
 <template>
@@ -252,6 +252,51 @@ import { bonuses, facts, partners, price, results, speakers, tools } from "@/con
               </span>
             </li>
           </template>
+        </ul>
+      </div>
+      <span class="hero-plus hero-plus-bottom -left-[5px] bottom-0" aria-hidden="true" />
+      <span class="hero-plus hero-plus-bottom -right-[5px] bottom-0" aria-hidden="true" />
+    </div>
+    <div class="border-t border-rule" />
+  </section>
+
+  <section class="overflow-x-clip bg-stone text-graphite" aria-labelledby="after-title">
+    <div class="relative mx-auto max-w-6xl border-x border-rule">
+      <TextAnimate
+        id="after-title"
+        as="h2"
+        animation="slideUp"
+        by="word"
+        :duration="0.4"
+        class="px-4 pt-12 pb-10 text-3xl font-medium leading-tight sm:px-6 sm:pt-16 sm:pb-12 sm:text-5xl"
+      >
+        После семинара вы
+      </TextAnimate>
+      <div class="border-t border-rule px-4 py-12 sm:px-6 sm:py-16">
+        <ul class="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <li
+            v-for="(item, index) in afterSeminar"
+            :key="item"
+            data-reveal
+            :data-delay="index * 90"
+            class="flex flex-col rounded-2xl border border-rule bg-snow/70 p-5 transition-colors duration-300 hover:border-graphite/20 hover:bg-snow sm:p-6"
+          >
+            <span
+              class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-peach-strong"
+              aria-hidden="true"
+            >
+              <svg viewBox="0 0 20 20" class="h-5 w-5" fill="none">
+                <path
+                  d="M5 10.5 L8.5 14 L15 6.5"
+                  stroke="#fff"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+            <p class="mt-5 text-base leading-snug text-graphite/85 sm:text-lg">{{ item }}</p>
+          </li>
         </ul>
       </div>
       <span class="hero-plus hero-plus-bottom -left-[5px] bottom-0" aria-hidden="true" />
