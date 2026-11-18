@@ -72,6 +72,84 @@ import { bonuses, facts, partners, price, results, speakers } from "@/content";
     <div class="border-t border-rule" />
   </section>
 
+  <section class="overflow-x-clip bg-stone text-graphite" aria-labelledby="shift-title">
+    <div class="relative mx-auto max-w-6xl border-x border-rule">
+      <TextAnimate
+        id="shift-title"
+        as="h2"
+        animation="slideUp"
+        by="word"
+        :duration="0.4"
+        class="px-4 pt-12 pb-10 text-3xl font-medium leading-tight sm:px-6 sm:pt-16 sm:pb-12 sm:text-5xl"
+      >
+        Рынок уже меняется — не останьтесь в стороне
+      </TextAnimate>
+      <div class="border-t border-rule px-4 py-12 sm:px-6 sm:py-16">
+        <div class="grid gap-3 sm:gap-4 lg:grid-cols-2">
+          <div
+            data-reveal
+            class="flex flex-col justify-center rounded-2xl border border-rule bg-snow/70 p-6 sm:p-8"
+          >
+            <p class="text-lg leading-relaxed text-graphite/75 sm:text-xl">
+              Искусственный интеллект и автоматизация уже вошли в бизнес: реклама, обработка
+              заявок, аналитика и учёт всё чаще работают
+              <mark class="key-mark">почти без участия человека</mark>. Те, кто внедряет это
+              первыми, забирают клиентов и экономят часы, а большинство предпринимателей
+              <mark class="key-mark">не успевают за переменами</mark>.
+            </p>
+          </div>
+          <div
+            data-reveal
+            data-delay="80"
+            class="group relative flex flex-col justify-center rounded-2xl border border-peach-line bg-peach-soft/50 p-6 sm:p-8"
+          >
+            <FactIcon kind="gears" class="-ml-1 h-16 w-auto self-start sm:h-20" />
+            <p class="mt-5 text-5xl leading-none font-semibold text-peach-ink sm:text-6xl">
+              более 3 из 4
+            </p>
+            <p class="mt-3 text-base leading-snug text-graphite/75 sm:text-lg">
+              компаний в мире уже используют ИИ хотя бы в одном процессе — но единицы умеют
+              превращать это в прибыль, а не в разовые эксперименты.
+            </p>
+            <p class="mt-3 text-xs text-quiet">По данным исследования McKinsey, 2024</p>
+          </div>
+        </div>
+        <div class="mt-3 grid gap-3 sm:mt-4 sm:gap-4 md:grid-cols-2">
+          <div data-reveal class="rounded-2xl border border-rule bg-snow/70 p-5 sm:p-6">
+            <p class="text-2xl leading-tight font-semibold text-graphite sm:text-3xl">
+              Пока — вручную
+            </p>
+            <p class="mt-2 text-sm leading-normal text-quiet sm:text-base">
+              Большинство местного бизнеса всё ещё теряет заявки и тратит часы на рутину, которую
+              давно можно поручить инструментам.
+            </p>
+          </div>
+          <div
+            data-reveal
+            data-delay="80"
+            class="rounded-2xl border border-rule bg-snow/70 p-5 sm:p-6"
+          >
+            <p class="text-2xl leading-tight font-semibold text-graphite sm:text-3xl">
+              Каждый день на счету
+            </p>
+            <p class="mt-2 text-sm leading-normal text-quiet sm:text-base">
+              Конкуренты, которые настроили рекламу и автоматизацию раньше, платят за клиента
+              меньше и растут быстрее.
+            </p>
+          </div>
+        </div>
+        <div data-reveal class="mt-10 flex justify-center">
+          <BookLink variant="dark" offset="stone" location="shift" class="h-14 px-8 text-base"
+            >Не отставать — записаться</BookLink
+          >
+        </div>
+      </div>
+      <span class="hero-plus hero-plus-bottom -left-[5px] bottom-0" aria-hidden="true" />
+      <span class="hero-plus hero-plus-bottom -right-[5px] bottom-0" aria-hidden="true" />
+    </div>
+    <div class="border-t border-rule" />
+  </section>
+
   <section class="overflow-x-clip bg-stone text-graphite" aria-labelledby="results-title">
     <div class="relative mx-auto max-w-6xl border-x border-rule">
       <TextAnimate
