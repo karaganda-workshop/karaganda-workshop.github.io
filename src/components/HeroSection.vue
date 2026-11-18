@@ -40,10 +40,10 @@ import TextAnimate from "@/components/ui/TextAnimate.vue";
             >Забронировать место</BookLink
           >
           <a
-            href="#speakers"
+            href="#results"
             class="inline-flex h-14 items-center rounded-full border border-rule bg-snow px-8 text-base font-semibold text-graphite transition-colors duration-200 hover:border-graphite/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-graphite focus-visible:ring-offset-2 focus-visible:ring-offset-stone"
           >
-            Кто выступает
+            Что я получу
           </a>
         </div>
       </div>

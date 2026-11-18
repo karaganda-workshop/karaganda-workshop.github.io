@@ -215,7 +215,11 @@ import { afterSeminar, bonuses, facts, partners, price, speakers, tools } from "
     <div class="border-t border-rule" />
   </section>
 
-  <section class="overflow-x-clip bg-stone text-graphite" aria-labelledby="after-title">
+  <section
+    id="results"
+    class="scroll-mt-14 overflow-x-clip bg-stone text-graphite"
+    aria-labelledby="after-title"
+  >
     <div class="relative mx-auto max-w-6xl border-x border-rule">
       <TextAnimate
         id="after-title"
