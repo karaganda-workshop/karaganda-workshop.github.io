@@ -34,7 +34,7 @@ const PIXEL_ID = (import.meta.env.VITE_META_PIXEL_ID ?? "").trim();
 export const pixelEnabled = /^\d{10,20}$/.test(PIXEL_ID);
 
 const WORKSHOP = {
-  content_name: "Практический воркшоп для предпринимателей — Караганда, 26 ноября",
+  content_name: "Практический бизнес-семинар для предпринимателей — Караганда, 26 ноября",
   content_category: "workshop",
   value: 15000,
   currency: "KZT",

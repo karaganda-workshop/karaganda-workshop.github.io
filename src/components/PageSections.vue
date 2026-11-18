@@ -82,7 +82,7 @@ import { bonuses, facts, partners, price, results, speakers } from "@/content";
         :duration="0.4"
         class="px-4 pt-12 pb-10 text-3xl font-medium leading-tight sm:px-6 sm:pt-16 sm:pb-12 sm:text-5xl"
       >
-        Результаты воркшопа
+        Результаты бизнес-семинара
       </TextAnimate>
       <div class="border-t border-rule px-4 py-12 sm:px-6 sm:py-16">
         <ol class="grid gap-3 sm:gap-4 md:grid-cols-3">
@@ -198,7 +198,7 @@ import { bonuses, facts, partners, price, results, speakers } from "@/content";
             <span
               class="self-start rounded-full border border-snow/15 px-3 py-1 text-xs text-snow/70 sm:text-sm"
             >
-              Билет на воркшоп
+              Билет на бизнес-семинар
             </span>
             <p class="mt-8 flex flex-wrap items-baseline gap-x-4 gap-y-1">
               <span class="text-6xl font-medium tracking-tight tabular-nums sm:text-8xl">
