@@ -41,7 +41,7 @@ import { bonuses, facts, partners, price, results, speakers } from "@/content";
         :duration="0.4"
         class="px-4 pt-12 pb-10 text-3xl font-medium leading-tight sm:px-6 sm:pt-16 sm:pb-12 sm:text-5xl"
       >
-        Помогли в организации
+        При сотрудничестве
       </TextAnimate>
       <ul class="grid grid-cols-2 border-t border-rule">
         <li

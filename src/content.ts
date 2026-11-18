@@ -37,7 +37,10 @@ export const facts = [
 export const results = [
   { text: "Поймёте, как правильно работать с рекламой", icon: "target" },
   { text: "Научитесь автоматизировать обработку заявок", icon: "gears" },
-  { text: "Будете знать всё про налогообложение в 2026 году", icon: "calculator" },
+  {
+    text: "Получите ясность в налогах и порядок в документах к закрытию отчётного года",
+    icon: "calculator",
+  },
 ] as const;
 
 export interface Speaker {
