@@ -220,6 +220,7 @@ import { bonuses, facts, partners, price, results, speakers, tools } from "@/con
                 class="-ml-1 h-16 w-auto self-start transition-transform duration-500 ease-out group-hover:-translate-y-1 sm:h-20"
               />
               <h3 class="mt-5 text-xl font-medium leading-tight sm:text-2xl">{{ block.title }}</h3>
+              <p class="mt-2 text-sm leading-normal text-quiet sm:text-base">{{ block.note }}</p>
               <div class="mt-5 flex flex-col gap-4">
                 <div v-for="group in block.groups" :key="group.label">
                   <p class="text-xs tracking-wide text-quiet uppercase">{{ group.label }}</p>

@@ -47,6 +47,7 @@ export const tools = [
   {
     title: "Маркетинг",
     icon: "target",
+    note: "Как запустить рекламу в 10 раз быстрее и проще, не привлекая сторонних специалистов.",
     groups: [
       { label: "Автоматизация маркетинга", items: ["GPT", "Claude Cowork"] },
       { label: "Рекламные кабинеты", items: ["Meta Ads", "Google Ads"] },
@@ -56,6 +57,7 @@ export const tools = [
   {
     title: "Применение ИИ",
     icon: "gears",
+    note: "Увеличиваем поток и скорость обработки входящих заявок, убирая ручную работу.",
     groups: [
       { label: "Автоматизация заявок", items: ["NextBot", "WhatsApp", "Instagram"] },
       { label: "CRM", items: ["AmoCRM", "Bitrix24"] },
@@ -64,6 +66,7 @@ export const tools = [
   {
     title: "Финансы",
     icon: "calculator",
+    note: "Спокойно сдаём отчётность в конце года и наводим порядок в финансах.",
     groups: [
       {
         label: "Порядок в деньгах",
