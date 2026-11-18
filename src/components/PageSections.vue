@@ -105,7 +105,7 @@ import { afterSeminar, bonuses, facts, partners, price, speakers, tools } from "
           >
             <FactIcon kind="gears" class="-ml-1 h-16 w-auto self-start sm:h-20" />
             <p class="mt-5 text-5xl leading-none font-semibold text-peach-ink sm:text-6xl">
-              более 3 из 4
+              3 из 4
             </p>
             <p class="mt-3 text-base leading-snug text-graphite/75 sm:text-lg">
               компаний в мире уже используют ИИ хотя бы в одном процессе — но единицы умеют
