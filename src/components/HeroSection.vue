@@ -19,7 +19,7 @@ import TextAnimate from "@/components/ui/TextAnimate.vue";
           :duration="0.4"
           class="max-w-4xl text-[2.15rem] font-medium leading-[1.06] sm:text-6xl lg:text-7xl"
         >
-          Практический воркшоп для предпринимателей
+          Практический бизнес-семинар для предпринимателей
         </TextAnimate>
         <p
           class="rise mt-6 max-w-2xl text-lg leading-relaxed text-graphite/65 sm:text-xl"
