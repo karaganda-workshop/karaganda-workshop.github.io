@@ -25,7 +25,7 @@ export const navLinks = [
 
 export const facts = [
   { question: "Когда?", answer: "26 ноября, в 18:30", icon: "calendar" },
-  { question: "Где?", answer: "Назарбаева 37", icon: "pin" },
+  { question: "Где?", answer: "Назарбаева 37, офис 111", icon: "pin" },
   { question: "Сколько длится?", answer: "1 час", icon: "clock" },
   {
     question: "О чем говорим?",
