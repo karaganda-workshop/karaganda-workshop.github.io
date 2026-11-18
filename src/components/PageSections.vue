@@ -2,6 +2,7 @@
 /** Everything below the hero: facts, partners, results, speakers, price + bonuses. */
 import BookLink from "@/components/BookLink.vue";
 import FactIcon from "@/components/FactIcon.vue";
+import LeadMagnet from "@/components/LeadMagnet.vue";
 import TextAnimate from "@/components/ui/TextAnimate.vue";
 import { afterSeminar, bonuses, facts, partners, price, speakers, tools } from "@/content";
 </script>
@@ -214,6 +215,8 @@ import { afterSeminar, bonuses, facts, partners, price, speakers, tools } from "
     </div>
     <div class="border-t border-rule" />
   </section>
+
+  <LeadMagnet />
 
   <section
     id="results"
