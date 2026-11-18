@@ -3,8 +3,16 @@ import { defineConfig, type Plugin } from "vite";
 import vue from "@vitejs/plugin-vue";
 import tailwindcss from "@tailwindcss/vite";
 
-// GitHub Pages serves the site from /workshop-karaganda/; local dev stays at /.
-const pagesBuild = process.env.GITHUB_PAGES === "1";
+// URL path the site is served from. The Pages workflow sets SITE_BASE from
+// actions/configure-pages: "/" for karaganda-workshop.github.io, "/<repo>/"
+// for a project site. Local dev and preview stay at "/".
+function siteBase(raw: string | undefined): string {
+  const value = (raw ?? "/").trim();
+  if (!/^\/([A-Za-z0-9._-]+\/)*$/.test(value)) {
+    throw new Error(`SITE_BASE must look like "/" or "/repo/", got "${value}"`);
+  }
+  return value;
+}
 
 /**
  * Content-Security-Policy for the built site. GitHub Pages can't send
@@ -50,7 +58,7 @@ function securityMeta(): Plugin {
 }
 
 export default defineConfig({
-  base: pagesBuild ? "/workshop-karaganda/" : "/",
+  base: siteBase(process.env.SITE_BASE),
   plugins: [vue(), tailwindcss(), securityMeta()],
   resolve: {
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },

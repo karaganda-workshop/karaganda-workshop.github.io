@@ -31,12 +31,15 @@ jobs:
         run: npm ci
 
       - name: Configure Pages
+        id: pages
         uses: actions/configure-pages@v5
 
+      # base_path is "" for an account/organization site (name.github.io)
+      # and "/<repo>" for a project site, so one workflow fits both.
       - name: Build static site
         run: npm run build:pages
         env:
-          GITHUB_PAGES: "1"
+          SITE_BASE: ${{ steps.pages.outputs.base_path }}/
 
       - name: Disable Jekyll
         run: touch dist/.nojekyll
