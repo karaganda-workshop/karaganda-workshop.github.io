@@ -3,7 +3,20 @@ export function asset(path: string): string {
   return `${import.meta.env.BASE_URL}${path.replace(/^\//, "")}`;
 }
 
-export const WHATSAPP = "https://wa.me/77026527347";
+const DEFAULT_WHATSAPP = "https://wa.me/77026527347";
+
+/**
+ * Booking link. Overridable via VITE_WHATSAPP_URL, but only with a plain
+ * https://wa.me/<digits> link — anything else (typo, javascript:, another
+ * host) falls back to the default so a bad value can't hijack every CTA.
+ */
+function whatsappUrl(raw: string | undefined): string {
+  const value = raw?.trim();
+  if (!value) return DEFAULT_WHATSAPP;
+  return /^https:\/\/wa\.me\/\d{6,15}(\?text=[\w%.\-+]*)?$/.test(value) ? value : DEFAULT_WHATSAPP;
+}
+
+export const WHATSAPP = whatsappUrl(import.meta.env.VITE_WHATSAPP_URL);
 
 export const navLinks = [
   { href: "#speakers", label: "Спикеры" },
@@ -57,7 +70,7 @@ export const speakers: Speaker[] = [
 
 export const price = {
   amount: "15\u00a0000",
-  unit: "тенге с человека",
+  unit: "с человека",
   note: "Один билет на воркшоп. Бонусы уже входят в эту сумму.",
   included: [
     "Воркшоп: реклама, автоматизация, налоги",
@@ -81,8 +94,24 @@ export const bonuses = [
   },
 ] as const;
 
-export const partners = [
-  { src: asset("/partners/karaganda.png"), alt: "Караганда", size: "h-20 sm:h-32" },
+export interface Partner {
+  src: string;
+  alt: string;
+  size: string;
+  /** Shown next to the logo when the logo itself carries no name. */
+  caption?: { kind: string; name: string };
+}
+
+export const partners: Partner[] = [
+  {
+    src: asset("/partners/karaganda.png"),
+    alt: "ОЮЛ и ИП «Казахстанская ассоциация преподавателей и сервисных услуг»",
+    size: "h-16 sm:h-28",
+    caption: {
+      kind: "ОЮЛ и ИП",
+      name: "«Казахстанская ассоциация преподавателей и сервисных услуг»",
+    },
+  },
   {
     src: asset("/partners/legal.png"),
     alt: "Палата юридических консультантов",

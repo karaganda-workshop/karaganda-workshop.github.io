@@ -49,15 +49,21 @@ import { bonuses, facts, partners, price, results, speakers } from "@/content";
           :key="logo.alt"
           data-reveal
           :data-delay="i * 70"
-          class="flex h-36 items-center justify-center border-rule px-4 sm:h-60 sm:px-8"
+          class="flex min-h-36 flex-col items-center justify-center gap-3 border-rule px-3 py-6 text-center sm:min-h-60 sm:flex-row sm:gap-5 sm:px-8 sm:text-left"
           :class="{ 'border-r': i === 0 }"
         >
           <img
             :src="logo.src"
-            :alt="logo.alt"
-            class="w-auto max-w-full object-contain"
+            :alt="logo.caption ? '' : logo.alt"
+            class="w-auto max-w-full shrink-0 object-contain"
             :class="logo.size"
           />
+          <p v-if="logo.caption" class="max-w-[17rem] leading-snug">
+            <span class="block text-xs text-quiet sm:text-sm">{{ logo.caption.kind }}</span>
+            <span class="mt-0.5 block text-xs font-medium text-graphite sm:text-base lg:text-lg">
+              {{ logo.caption.name }}
+            </span>
+          </p>
         </li>
       </ul>
       <span class="hero-plus hero-plus-bottom -left-[5px] bottom-0" aria-hidden="true" />
@@ -196,7 +202,8 @@ import { bonuses, facts, partners, price, results, speakers } from "@/content";
             </span>
             <p class="mt-8 flex flex-wrap items-baseline gap-x-4 gap-y-1">
               <span class="text-6xl font-medium tracking-tight tabular-nums sm:text-8xl">
-                {{ price.amount }}
+                {{ price.amount
+                }}<span class="ml-[0.12em] text-peach-strong" aria-label="тенге">₸</span>
               </span>
               <span class="text-xl text-snow/70 sm:text-2xl">{{ price.unit }}</span>
             </p>

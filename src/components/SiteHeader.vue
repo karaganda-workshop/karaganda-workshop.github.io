@@ -10,7 +10,7 @@ import { navLinks } from "@/content";
     >
       <a
         href="#top"
-        class="flex items-center gap-2 rounded-sm text-sm font-semibold text-graphite focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-graphite"
+        class="flex h-11 items-center gap-2 rounded-sm text-sm font-semibold text-graphite focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-graphite"
       >
         <svg viewBox="0 0 16 16" class="hidden size-4 sm:block" aria-hidden="true">
           <path
@@ -35,7 +35,7 @@ import { navLinks } from "@/content";
           v-for="link in navLinks"
           :key="link.href"
           :href="link.href"
-          class="rounded-sm text-sm text-graphite/75 transition-colors duration-200 hover:text-graphite focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-graphite"
+          class="inline-flex h-11 items-center rounded-sm text-sm text-graphite/75 transition-colors duration-200 hover:text-graphite focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-graphite"
         >
           {{ link.label }}
         </a>
