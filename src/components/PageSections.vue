@@ -208,6 +208,16 @@ import { bonuses, facts, partners, price, results, speakers, tools } from "@/con
         Инструменты, которые вы освоите
       </TextAnimate>
       <div class="border-t border-rule px-4 py-12 sm:px-6 sm:py-16">
+        <p
+          data-reveal
+          class="mb-8 max-w-3xl text-lg leading-relaxed text-graphite/75 sm:mb-10 sm:text-xl"
+        >
+          Эти темы работают не по отдельности, а как
+          <mark class="key-mark">одна система</mark>: вы поймёте, как запустить рекламу,
+          <mark class="key-mark">автоматизировать её и обработку заявок</mark>, а затем наведёте
+          порядок в налогах и документах — от первого обращения клиента до закрытия отчётного
+          года.
+        </p>
         <ul class="grid gap-3 sm:gap-4 lg:grid-cols-3">
           <li
             v-for="(block, index) in tools"
