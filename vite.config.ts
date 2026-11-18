@@ -20,6 +20,7 @@ function siteBase(raw: string | undefined): string {
  * needs inline styles and a websocket for HMR.
  *  - scripts only from our own origin + Meta Pixel + Yandex Metrika (no inline/eval)
  *    → injected markup can't run
+ *  - googletagmanager.com / google-analytics.com for the Google tag (GA4)
  *  - mc.yandex.* for Metrika hits, Webvisor and click map (frames/blob workers)
  *  - facebook.com for the pixel's beacons (img / fetch)
  *  - 'unsafe-inline' styles: Vue :style bindings write style attributes
@@ -28,11 +29,11 @@ function siteBase(raw: string | undefined): string {
  */
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' https://connect.facebook.net https://mc.yandex.ru https://yastatic.net",
+  "script-src 'self' https://connect.facebook.net https://mc.yandex.ru https://yastatic.net https://*.googletagmanager.com",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: https://www.facebook.com https://mc.yandex.ru https://mc.yandex.kz https://mc.yandex.com",
+  "img-src 'self' data: https://www.facebook.com https://mc.yandex.ru https://mc.yandex.kz https://mc.yandex.com https://*.google-analytics.com https://*.googletagmanager.com",
   "font-src 'self' data:",
-  "connect-src 'self' https://www.facebook.com https://connect.facebook.net https://mc.yandex.ru https://mc.yandex.kz https://mc.yandex.com wss://mc.yandex.ru wss://mc.yandex.kz wss://mc.yandex.com",
+  "connect-src 'self' https://www.facebook.com https://connect.facebook.net https://mc.yandex.ru https://mc.yandex.kz https://mc.yandex.com wss://mc.yandex.ru wss://mc.yandex.kz wss://mc.yandex.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
   "frame-src blob: https://mc.yandex.ru https://mc.yandex.kz https://mc.yandex.com",
   "child-src blob: https://mc.yandex.ru https://mc.yandex.kz https://mc.yandex.com",
   "object-src 'none'",

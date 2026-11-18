@@ -73,3 +73,15 @@ Vue 3 + TypeScript, Vite, Tailwind CSS v4. Публикуется на GitHub Pa
 - Клик по любой кнопке записи отправляет цель `registration` с параметром
   `button_location`. В Метрике создайте цель «JavaScript-событие» с
   идентификатором `registration`.
+
+## Google тег (GA4)
+
+- Контейнер `GTM-MTT8BNFQ` (Google Analytics 4, поток `G-ZDRD882N2L`)
+  подключается в `src/lib/googleTag.ts` без встроенного скрипта; CSP разрешает
+  только `*.googletagmanager.com` и `*.google-analytics.com`.
+- Работает только в собранной версии сайта. Другой контейнер —
+  `VITE_GOOGLE_TAG_ID`.
+- Клик по кнопке записи отправляет событие `generate_lead`
+  (`value: 15000`, `currency: KZT`, `button_location`). Отметьте его в GA4 как
+  ключевое событие. Теги «Пользовательский HTML» в контейнере работать не
+  будут — их блокирует CSP.

@@ -7,6 +7,8 @@ interface ImportMetaEnv {
   readonly VITE_META_PIXEL_ID?: string;
   /** Yandex Metrika counter ID override (public, numeric). */
   readonly VITE_YANDEX_METRIKA_ID?: string;
+  /** Google tag container ID override (public, GTM-XXXXXXX). */
+  readonly VITE_GOOGLE_TAG_ID?: string;
 }
 
 interface ImportMeta {

@@ -4,13 +4,14 @@
  * WhatsApp chat and is a ShimmerButton.
  * `dark` is the graphite pill used on light sections; `light` sits on the
  * dark price panel. Size it (height, padding, text size) via `class`.
- * A click reports a registration to Meta Pixel and Yandex Metrika, tagged
+ * A click reports a registration to Meta Pixel, Yandex Metrika and Google, tagged
  * with `location`.
  */
 import ShimmerButton from "@/components/ui/ShimmerButton.vue";
 import { WHATSAPP } from "@/content";
 import { trackRegistration } from "@/lib/metaPixel";
 import { reachRegistrationGoal } from "@/lib/yandexMetrika";
+import { trackGoogleLead } from "@/lib/googleTag";
 
 const props = withDefaults(
   defineProps<{
@@ -25,6 +26,7 @@ const props = withDefaults(
 function onClick() {
   trackRegistration(props.location);
   reachRegistrationGoal(props.location);
+  trackGoogleLead(props.location);
 }
 </script>
 
