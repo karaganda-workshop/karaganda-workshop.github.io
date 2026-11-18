@@ -36,7 +36,7 @@ import TextAnimate from "@/components/ui/TextAnimate.vue";
           class="rise mt-8 flex flex-wrap items-center justify-center gap-3"
           style="animation-delay: 220ms"
         >
-          <BookLink variant="dark" offset="stone" class="h-14 px-8 text-base"
+          <BookLink variant="dark" offset="stone" location="hero" class="h-14 px-8 text-base"
             >Забронировать место</BookLink
           >
           <a

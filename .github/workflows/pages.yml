@@ -40,6 +40,8 @@ jobs:
         run: npm run build:pages
         env:
           SITE_BASE: ${{ steps.pages.outputs.base_path }}/
+          # Public pixel ID: Settings → Secrets and variables → Actions → Variables.
+          VITE_META_PIXEL_ID: ${{ vars.META_PIXEL_ID }}
 
       - name: Disable Jekyll
         run: touch dist/.nojekyll

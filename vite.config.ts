@@ -18,18 +18,23 @@ function siteBase(raw: string | undefined): string {
  * Content-Security-Policy for the built site. GitHub Pages can't send
  * response headers, so it ships as a <meta> tag. Build-only: the dev server
  * needs inline styles and a websocket for HMR.
- *  - scripts only from our own origin (no inline/eval) → injected markup can't run
+ *  - scripts only from our own origin + Meta Pixel + Yandex Metrika (no inline/eval)
+ *    → injected markup can't run
+ *  - mc.yandex.* for Metrika hits, Webvisor and click map (frames/blob workers)
+ *  - facebook.com for the pixel's beacons (img / fetch)
  *  - 'unsafe-inline' styles: Vue :style bindings write style attributes
  *  - data: fonts/images: Vite inlines small assets as data URIs
  *  - no plugins, no <base> hijack, no form posts, no framing via <object>
  */
 const CSP = [
   "default-src 'self'",
-  "script-src 'self'",
+  "script-src 'self' https://connect.facebook.net https://mc.yandex.ru https://yastatic.net",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data:",
+  "img-src 'self' data: https://www.facebook.com https://mc.yandex.ru https://mc.yandex.kz https://mc.yandex.com",
   "font-src 'self' data:",
-  "connect-src 'self'",
+  "connect-src 'self' https://www.facebook.com https://connect.facebook.net https://mc.yandex.ru https://mc.yandex.kz https://mc.yandex.com wss://mc.yandex.ru wss://mc.yandex.kz wss://mc.yandex.com",
+  "frame-src blob: https://mc.yandex.ru https://mc.yandex.kz https://mc.yandex.com",
+  "child-src blob: https://mc.yandex.ru https://mc.yandex.kz https://mc.yandex.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'none'",

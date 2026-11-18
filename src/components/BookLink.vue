@@ -4,14 +4,28 @@
  * WhatsApp chat and is a ShimmerButton.
  * `dark` is the graphite pill used on light sections; `light` sits on the
  * dark price panel. Size it (height, padding, text size) via `class`.
+ * A click reports a registration to Meta Pixel and Yandex Metrika, tagged
+ * with `location`.
  */
 import ShimmerButton from "@/components/ui/ShimmerButton.vue";
 import { WHATSAPP } from "@/content";
+import { trackRegistration } from "@/lib/metaPixel";
+import { reachRegistrationGoal } from "@/lib/yandexMetrika";
 
-withDefaults(defineProps<{ variant?: "dark" | "light"; offset?: "night" | "paper" | "stone" }>(), {
-  variant: "dark",
-  offset: "stone",
-});
+const props = withDefaults(
+  defineProps<{
+    variant?: "dark" | "light";
+    offset?: "night" | "paper" | "stone";
+    /** Which button this is, reported with the Meta registration event. */
+    location: string;
+  }>(),
+  { variant: "dark", offset: "stone" },
+);
+
+function onClick() {
+  trackRegistration(props.location);
+  reachRegistrationGoal(props.location);
+}
 </script>
 
 <template>
@@ -21,6 +35,7 @@ withDefaults(defineProps<{ variant?: "dark" | "light"; offset?: "night" | "paper
     target="_blank"
     rel="noopener noreferrer"
     :padded="false"
+    @click="onClick"
     :background="variant === 'light' ? '#fbfbf8' : '#111110'"
     :shimmer-color="variant === 'light' ? '#e9a081' : '#ffffff'"
     class="shadow-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"

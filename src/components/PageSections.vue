@@ -106,7 +106,7 @@ import { bonuses, facts, partners, price, results, speakers } from "@/content";
           </li>
         </ol>
         <div data-reveal class="mt-10 flex justify-center">
-          <BookLink variant="dark" offset="stone" class="h-14 px-8 text-base"
+          <BookLink variant="dark" offset="stone" location="results" class="h-14 px-8 text-base"
             >Забронировать место</BookLink
           >
         </div>
@@ -231,7 +231,7 @@ import { bonuses, facts, partners, price, results, speakers } from "@/content";
             </ul>
 
             <div class="mt-10 lg:mt-auto lg:pt-10">
-              <BookLink variant="light" offset="night" class="h-14 px-8 text-base">
+              <BookLink variant="light" offset="night" location="price" class="h-14 px-8 text-base">
                 Забронировать место
               </BookLink>
             </div>

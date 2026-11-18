@@ -40,7 +40,11 @@ import { navLinks } from "@/content";
           {{ link.label }}
         </a>
       </nav>
-      <BookLink variant="dark" offset="stone" class="h-10 px-4 text-sm sm:h-11 sm:px-6 sm:text-base"
+      <BookLink
+        variant="dark"
+        offset="stone"
+        location="header"
+        class="h-10 px-4 text-sm sm:h-11 sm:px-6 sm:text-base"
         >Записаться</BookLink
       >
     </div>
