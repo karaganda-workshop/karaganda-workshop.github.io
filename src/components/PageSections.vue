@@ -3,7 +3,7 @@
 import BookLink from "@/components/BookLink.vue";
 import FactIcon from "@/components/FactIcon.vue";
 import TextAnimate from "@/components/ui/TextAnimate.vue";
-import { afterSeminar, bonuses, facts, partners, price, results, speakers, tools } from "@/content";
+import { afterSeminar, bonuses, facts, partners, price, speakers, tools } from "@/content";
 </script>
 
 <template>
@@ -141,51 +141,6 @@ import { afterSeminar, bonuses, facts, partners, price, results, speakers, tools
         <div data-reveal class="mt-10 flex justify-center">
           <BookLink variant="dark" offset="stone" location="shift" class="h-14 px-8 text-base"
             >Не отставать — записаться</BookLink
-          >
-        </div>
-      </div>
-      <span class="hero-plus hero-plus-bottom -left-[5px] bottom-0" aria-hidden="true" />
-      <span class="hero-plus hero-plus-bottom -right-[5px] bottom-0" aria-hidden="true" />
-    </div>
-    <div class="border-t border-rule" />
-  </section>
-
-  <section class="overflow-x-clip bg-stone text-graphite" aria-labelledby="results-title">
-    <div class="relative mx-auto max-w-6xl border-x border-rule">
-      <TextAnimate
-        id="results-title"
-        as="h2"
-        animation="slideUp"
-        by="word"
-        :duration="0.4"
-        class="px-4 pt-12 pb-10 text-3xl font-medium leading-tight sm:px-6 sm:pt-16 sm:pb-12 sm:text-5xl"
-      >
-        Результаты бизнес-семинара
-      </TextAnimate>
-      <div class="border-t border-rule px-4 py-12 sm:px-6 sm:py-16">
-        <ol class="grid gap-3 sm:gap-4 md:grid-cols-3">
-          <li
-            v-for="(item, index) in results"
-            :key="item.text"
-            data-reveal
-            :data-delay="index * 80"
-            class="group relative flex flex-col rounded-2xl border border-rule bg-snow/70 p-5 transition-colors duration-300 hover:border-graphite/20 hover:bg-snow sm:p-6"
-          >
-            <span
-              class="absolute top-5 right-5 text-sm tabular-nums text-quiet sm:top-6 sm:right-6"
-            >
-              0{{ index + 1 }}
-            </span>
-            <FactIcon
-              :kind="item.icon"
-              class="-ml-1 h-16 w-auto self-start transition-transform duration-500 ease-out group-hover:-translate-y-1 sm:h-20"
-            />
-            <p class="mt-5 text-lg leading-snug font-medium sm:text-2xl">{{ item.text }}</p>
-          </li>
-        </ol>
-        <div data-reveal class="mt-10 flex justify-center">
-          <BookLink variant="dark" offset="stone" location="results" class="h-14 px-8 text-base"
-            >Забронировать место</BookLink
           >
         </div>
       </div>
