@@ -253,13 +253,6 @@ import { bonuses, facts, partners, price, results, speakers, tools } from "@/con
             </li>
           </template>
         </ul>
-        <div data-reveal data-delay="840" class="mt-8 flex justify-center sm:mt-10">
-          <p
-            class="max-w-xl rounded-full border border-peach-line bg-peach-soft/50 px-5 py-2.5 text-center text-sm font-medium text-peach-ink sm:px-6 sm:text-base"
-          >
-            Связка, которая превращает рекламу в заявки, а заявки&nbsp;— в прибыль
-          </p>
-        </div>
       </div>
       <span class="hero-plus hero-plus-bottom -left-[5px] bottom-0" aria-hidden="true" />
       <span class="hero-plus hero-plus-bottom -right-[5px] bottom-0" aria-hidden="true" />
