@@ -208,45 +208,57 @@ import { bonuses, facts, partners, price, results, speakers, tools } from "@/con
         Инструменты, которые вы освоите
       </TextAnimate>
       <div class="border-t border-rule px-4 py-12 sm:px-6 sm:py-16">
-        <p
-          data-reveal
-          class="mb-8 max-w-3xl text-lg leading-relaxed text-graphite/75 sm:mb-10 sm:text-xl"
-        >
-          Эти темы работают не по отдельности, а как
-          <mark class="key-mark">одна система</mark>: вы поймёте, как запустить рекламу,
-          <mark class="key-mark">автоматизировать её и обработку заявок</mark>, а затем наведёте
-          порядок в налогах и документах — от первого обращения клиента до закрытия отчётного
-          года.
-        </p>
-        <ul class="grid gap-3 sm:gap-4 lg:grid-cols-3">
-          <li
-            v-for="(block, index) in tools"
-            :key="block.title"
-            data-reveal
-            :data-delay="index * 80"
-            class="group flex flex-col rounded-2xl border border-rule bg-snow/70 p-5 transition-colors duration-300 hover:border-graphite/20 hover:bg-snow sm:p-6"
-          >
-            <FactIcon
-              :kind="block.icon"
-              class="-ml-1 h-16 w-auto self-start transition-transform duration-500 ease-out group-hover:-translate-y-1 sm:h-20"
-            />
-            <h3 class="mt-5 text-xl font-medium leading-tight sm:text-2xl">{{ block.title }}</h3>
-            <div class="mt-5 flex flex-col gap-4">
-              <div v-for="group in block.groups" :key="group.label">
-                <p class="text-xs tracking-wide text-quiet uppercase">{{ group.label }}</p>
-                <ul class="mt-2 flex flex-wrap gap-2">
-                  <li
-                    v-for="item in group.items"
-                    :key="item"
-                    class="rounded-full border border-peach-line/70 bg-peach-soft/40 px-3 py-1.5 text-sm leading-none font-medium text-peach-ink"
-                  >
-                    {{ item }}
-                  </li>
-                </ul>
+        <ul class="flex flex-col gap-2 sm:gap-3 lg:flex-row lg:items-stretch lg:gap-2">
+          <template v-for="(block, index) in tools" :key="block.title">
+            <li
+              data-reveal
+              :data-delay="index * 120"
+              class="group flex flex-col rounded-2xl border border-rule bg-snow/70 p-5 transition-colors duration-300 hover:border-graphite/20 hover:bg-snow sm:p-6 lg:min-w-0 lg:flex-1"
+            >
+              <FactIcon
+                :kind="block.icon"
+                class="-ml-1 h-16 w-auto self-start transition-transform duration-500 ease-out group-hover:-translate-y-1 sm:h-20"
+              />
+              <h3 class="mt-5 text-xl font-medium leading-tight sm:text-2xl">{{ block.title }}</h3>
+              <div class="mt-5 flex flex-col gap-4">
+                <div v-for="group in block.groups" :key="group.label">
+                  <p class="text-xs tracking-wide text-quiet uppercase">{{ group.label }}</p>
+                  <ul class="mt-2 flex flex-wrap gap-2">
+                    <li
+                      v-for="item in group.items"
+                      :key="item"
+                      class="rounded-full border border-peach-line/70 bg-peach-soft/40 px-3 py-1.5 text-sm leading-none font-medium text-peach-ink"
+                    >
+                      {{ item }}
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </div>
-          </li>
+            </li>
+            <li
+              v-if="index < tools.length - 1"
+              data-reveal
+              :data-delay="index * 120 + 60"
+              class="flex shrink-0 items-center justify-center py-1 lg:w-12 lg:py-0"
+              aria-hidden="true"
+            >
+              <span class="rotate-90 lg:rotate-0">
+                <svg viewBox="0 0 26 12" class="flow-glyph h-5 w-10 lg:h-6 lg:w-12">
+                  <path d="M3 2 L8 6 L3 10" />
+                  <path d="M11 2 L16 6 L11 10" />
+                  <path d="M19 2 L24 6 L19 10" />
+                </svg>
+              </span>
+            </li>
+          </template>
         </ul>
+        <div data-reveal class="mt-8 flex justify-center sm:mt-10">
+          <p
+            class="max-w-xl rounded-full border border-peach-line bg-peach-soft/50 px-5 py-2.5 text-center text-sm font-medium text-peach-ink sm:px-6 sm:text-base"
+          >
+            Связка, которая превращает рекламу в заявки, а заявки&nbsp;— в прибыль
+          </p>
+        </div>
       </div>
       <span class="hero-plus hero-plus-bottom -left-[5px] bottom-0" aria-hidden="true" />
       <span class="hero-plus hero-plus-bottom -right-[5px] bottom-0" aria-hidden="true" />
