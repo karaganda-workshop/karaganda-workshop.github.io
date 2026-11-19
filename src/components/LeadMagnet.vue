@@ -1,14 +1,16 @@
 <script setup lang="ts">
 /**
- * Interactive lead magnet with two scenarios the visitor can switch between:
- *  - "leads": answer 10 incoming requests by hand while the AI clears the
- *    same queue in seconds;
- *  - "creative": crawl through an approval chat with a marketer and the boss
- *    while the AI assembles a finished ad creative for a marketing webinar.
+ * Interactive lead magnet with two scenarios the visitor can switch between,
+ * each a pair of auto-playing chats launched by one button:
+ *  - "leads": one client is served by a human manager (slow) and by the AI
+ *    (fast and far more thorough);
+ *  - "creative": approving an ad creative with marketer Руслан (slow) vs the
+ *    AI assembling it in a quick dialogue.
  * Pure client-side; it shows the value of AI before the CTA.
  */
-import { computed, onUnmounted, ref } from "vue";
+import { computed, onUnmounted, reactive, ref } from "vue";
 import BookLink from "@/components/BookLink.vue";
+import ChatThread from "@/components/ChatThread.vue";
 import TextAnimate from "@/components/ui/TextAnimate.vue";
 
 type Mode = "leads" | "creative";
@@ -35,217 +37,190 @@ function makeTimer(target: { value: number }) {
   };
 }
 
-// ---------- Scenario 1: incoming requests ----------
-interface Lead {
-  from: string;
+interface Step {
+  side: "in" | "out";
+  name?: string;
   text: string;
-  reply: string;
+  typeMs: number;
 }
 
-const leads: Lead[] = [
-  {
-    from: "Айгерим",
-    text: "Здравствуйте! Сколько стоит?",
-    reply: "Здравствуйте! 15 000 ₸. Оформляем заявку?",
-  },
-  {
-    from: "Данияр",
-    text: "Доставка по Караганде есть?",
-    reply: "Да, доставим за 1–2 дня по городу.",
-  },
-  {
-    from: "Марат",
-    text: "А можно в рассрочку?",
-    reply: "Да, рассрочка на 3 месяца без переплаты.",
-  },
-  { from: "Жанна", text: "Вы сегодня работаете?", reply: "Да, до 19:00. Чем помочь?" },
-  { from: "Олег", text: "Какие способы оплаты?", reply: "Kaspi, картой и наличными." },
-  { from: "Сауле", text: "Гарантия есть?", reply: "Да, гарантия 12 месяцев." },
-  { from: "Ержан", text: "Самовывоз возможен?", reply: "Да, забрать можно с Назарбаева 37." },
-  { from: "Ирина", text: "Сколько идёт доставка?", reply: "1–2 рабочих дня по городу." },
-  { from: "Нурлан", text: "Скидки бывают?", reply: "При заказе сегодня — скидка 10%." },
-  { from: "Алия", text: "Подскажите наличие", reply: "Есть в наличии. Оформляем?" },
-];
-const TOTAL = leads.length;
+function makePlayer(script: Step[]) {
+  const shown = ref<Step[]>([]);
+  const typing = ref<{ side: "in" | "out"; name?: string } | null>(null);
+  const ms = ref(0);
+  const running = ref(false);
+  const timer = makeTimer(ms);
+  let to: number | undefined;
+  const done = computed(() => shown.value.length >= script.length && !running.value);
 
-const youIdx = ref(0);
-const youInput = ref("");
-const youReplies = ref<string[]>([]);
-const youMs = ref(0);
-const youTimer = makeTimer(youMs);
-const youCurrent = computed<Lead | undefined>(() => leads[youIdx.value]);
-const youDone = computed(() => youIdx.value >= TOTAL);
-
-function sendYou(): void {
-  if (youDone.value) return;
-  const text = youInput.value.trim();
-  if (!text) return;
-  youTimer.start();
-  youReplies.value.push(text);
-  youInput.value = "";
-  youIdx.value += 1;
-  if (youDone.value) youTimer.stop();
-}
-
-const aiPairs = ref(0); // fully handled requests (client + reply shown)
-const aiClientTyping = ref(false); // client is writing (~3s)
-const aiCurClient = ref(false); // current client message shown, reply pending
-const aiAiTyping = ref(false); // AI is writing its reply (~1.5s)
-const aiMs = ref(0);
-const aiRunning = ref(false);
-const aiTimer = makeTimer(aiMs);
-let aiTimeout: number | undefined;
-const aiDone = computed(() => aiPairs.value >= TOTAL && !aiRunning.value);
-const aiShown = computed(() => leads.slice(0, aiPairs.value));
-const aiCurrent = computed<Lead | undefined>(() => leads[aiPairs.value]);
-
-function processLead(): void {
-  if (aiPairs.value >= TOTAL) {
-    aiTimer.stop();
-    aiRunning.value = false;
-    return;
-  }
-  aiClientTyping.value = true; // client writes for ~3s
-  aiTimeout = window.setTimeout(() => {
-    aiClientTyping.value = false;
-    aiCurClient.value = true; // client message lands
-    aiAiTyping.value = true; // AI replies in ~1.5s
-    aiTimeout = window.setTimeout(() => {
-      aiAiTyping.value = false;
-      aiCurClient.value = false;
-      aiPairs.value += 1; // pair done, reply shown
-      processLead();
-    }, 1500);
-  }, 3000);
-}
-
-function runAi(): void {
-  if (aiRunning.value) return;
-  aiPairs.value = 0;
-  aiMs.value = 0;
-  aiClientTyping.value = false;
-  aiCurClient.value = false;
-  aiAiTyping.value = false;
-  aiRunning.value = true;
-  aiTimer.start();
-  processLead();
-}
-
-// ---------- Scenario 2: ad creative ----------
-interface Msg {
-  from: "Руслан" | "Вы";
-  text: string;
-}
-
-const creativeScript: Msg[] = [
-  {
-    from: "Руслан",
-    text: "Салем! По вебинару накину пару заголовков, гляну как время будет 🙌",
-  },
-  { from: "Вы", text: "Руслан, только побыстрее, запуск на выходных" },
-  { from: "Руслан", text: "«Маркетинг, который приводит клиентов» — норм?" },
-  { from: "Вы", text: "Слишком общо, надо конкретнее и с оффером" },
-  { from: "Руслан", text: "Принял. Картинку дизайнер сделает, он щас занят, заказов много 🙈" },
-  { from: "Вы", text: "Руслан, опять ждать? У нас же запуск горит" },
-  { from: "Руслан", text: "К обеду скину, край — завтра утром" },
-  { from: "Вы", text: "Ну давай хоть к обеду 🙏" },
-];
-const CREATIVE_TOTAL = creativeScript.length;
-
-const crStep = ref(0);
-const crMs = ref(0);
-const crTimer = makeTimer(crMs);
-const crShown = computed(() => creativeScript.slice(0, crStep.value));
-const crDone = computed(() => crStep.value >= CREATIVE_TOTAL);
-
-function nextCreative(): void {
-  if (crDone.value) return;
-  crTimer.start();
-  crStep.value += 1;
-  if (crDone.value) crTimer.stop();
-}
-
-interface AiMsg {
-  from: "Вы" | "ИИ";
-  text: string;
-}
-
-// The AI side is a real back-and-forth: it asks, proposes and adjusts.
-const crDialog: AiMsg[] = [
-  { from: "Вы", text: "Нужен креатив на онлайн-вебинар по маркетингу" },
-  { from: "ИИ", text: "Понял. Аудитория — предприниматели малого бизнеса? И где крутим рекламу?" },
-  { from: "Вы", text: "Да, малый бизнес. Instagram и Meta" },
-  {
-    from: "ИИ",
-    text: "Заголовок: «Как привлекать клиентов из соцсетей за один вечер». Подзаголовок: «Бесплатный онлайн-вебинар · сегодня в 19:00».",
-  },
-  {
-    from: "ИИ",
-    text: "На картинке: предприниматель вечером за ноутбуком, на экране — растущий график заявок, тёплый свет.",
-  },
-  { from: "Вы", text: "А можно вариант посмелее?" },
-  {
-    from: "ИИ",
-    text: "«5 ошибок в рекламе, из-за которых вы теряете клиентов».",
-  },
-  {
-    from: "ИИ",
-    text: "Готово ✅ Заголовок, подзаголовок и картинка собраны — креатив готов, можете запускать 🚀",
-  },
-];
-
-const crAiIdx = ref(0);
-const crAiMs = ref(0);
-const crAiRunning = ref(false);
-const crAiTimer = makeTimer(crAiMs);
-let crAiStep: number | undefined;
-const crAiShown = computed(() => crDialog.slice(0, crAiIdx.value));
-const crAiDone = computed(() => crAiIdx.value >= crDialog.length && !crAiRunning.value);
-
-function runCreativeAi(): void {
-  if (crAiRunning.value) return;
-  crAiIdx.value = 0;
-  crAiMs.value = 0;
-  crAiRunning.value = true;
-  crAiTimer.start();
-  crAiStep = window.setInterval(() => {
-    crAiIdx.value += 1;
-    if (crAiIdx.value >= crDialog.length) {
-      if (crAiStep) clearInterval(crAiStep);
-      crAiStep = undefined;
-      crAiTimer.stop();
-      crAiRunning.value = false;
+  function play(i: number): void {
+    if (i >= script.length) {
+      typing.value = null;
+      timer.stop();
+      running.value = false;
+      return;
     }
-  }, 1500);
+    const step = script[i];
+    typing.value = { side: step.side, name: step.name };
+    to = window.setTimeout(() => {
+      typing.value = null;
+      shown.value = [...shown.value, step];
+      play(i + 1);
+    }, step.typeMs);
+  }
+
+  function start(): void {
+    if (to) clearTimeout(to);
+    shown.value = [];
+    ms.value = 0;
+    typing.value = null;
+    running.value = true;
+    timer.start();
+    play(0);
+  }
+
+  function stop(): void {
+    if (to) clearTimeout(to);
+    timer.stop();
+  }
+
+  return reactive({ shown, typing, ms, running, done, start, stop });
 }
 
-// ---------- Shared result ----------
+// ---- Scenario 1: one client, served by a manager vs the AI ----
+const CLIENT = "Айгерим";
+const T_CLIENT = 2200;
+const T_HUMAN = 4300;
+const T_AI = 1500;
+
+const leadsHuman = makePlayer([
+  { side: "in", name: CLIENT, text: "Здравствуйте! Сколько стоит?", typeMs: T_CLIENT },
+  { side: "out", text: "Здравствуйте, 15 000 ₸", typeMs: T_HUMAN },
+  { side: "in", name: CLIENT, text: "Доставка по Караганде есть?", typeMs: T_CLIENT },
+  { side: "out", text: "Да, есть", typeMs: T_HUMAN },
+  { side: "in", name: CLIENT, text: "А можно в рассрочку?", typeMs: T_CLIENT },
+  { side: "out", text: "Сейчас уточню у руководителя, отвечу позже", typeMs: T_HUMAN + 600 },
+  { side: "in", name: CLIENT, text: "Оплатить картой можно?", typeMs: T_CLIENT },
+  { side: "out", text: "Да, можно картой", typeMs: T_HUMAN },
+]);
+
+const leadsAi = makePlayer([
+  { side: "in", name: CLIENT, text: "Здравствуйте! Сколько стоит?", typeMs: T_CLIENT },
+  {
+    side: "out",
+    text: "Здравствуйте, Айгерим! Спасибо, что написали 🙌 Участие стоит 15 000 ₸ — в цену уже входят материалы и консультация после. Оформить вам заявку прямо сейчас?",
+    typeMs: T_AI,
+  },
+  { side: "in", name: CLIENT, text: "Доставка по Караганде есть?", typeMs: T_CLIENT },
+  {
+    side: "out",
+    text: "Да, конечно! По Караганде доставляем за 1–2 дня, курьером до двери. Подскажите район — скажу точное время и рассчитаю доставку.",
+    typeMs: T_AI,
+  },
+  { side: "in", name: CLIENT, text: "А можно в рассрочку?", typeMs: T_CLIENT },
+  {
+    side: "out",
+    text: "Да, есть рассрочка на 3 месяца без переплаты через Kaspi — это примерно 5 000 ₸ в месяц. Хотите, подскажу, как оформить за пару минут?",
+    typeMs: T_AI,
+  },
+  { side: "in", name: CLIENT, text: "Оплатить картой можно?", typeMs: T_CLIENT },
+  {
+    side: "out",
+    text: "Конечно — принимаем картой, наличными и через Kaspi QR, как вам удобнее, всё с чеком. Давайте оформлю заказ и забронирую за вами?",
+    typeMs: T_AI,
+  },
+]);
+
+// ---- Scenario 2: ad creative ----
+const T_RUSLAN = 3200;
+const T_YOU = 2400;
+
+const creativeHuman = makePlayer([
+  {
+    side: "in",
+    name: "Руслан",
+    text: "Салем! По вебинару накину пару заголовков, гляну как время будет 🙌",
+    typeMs: T_RUSLAN,
+  },
+  { side: "out", text: "Руслан, только побыстрее, запуск на выходных", typeMs: T_YOU },
+  {
+    side: "in",
+    name: "Руслан",
+    text: "«Маркетинг, который приводит клиентов» — норм?",
+    typeMs: T_RUSLAN,
+  },
+  { side: "out", text: "Слишком общо, надо конкретнее и с оффером", typeMs: T_YOU },
+  {
+    side: "in",
+    name: "Руслан",
+    text: "Принял. Картинку дизайнер сделает, он щас занят, заказов много 🙈",
+    typeMs: T_RUSLAN,
+  },
+  { side: "out", text: "Руслан, опять ждать? У нас же запуск горит", typeMs: T_YOU },
+  { side: "in", name: "Руслан", text: "К обеду скину, край — завтра утром", typeMs: T_RUSLAN },
+]);
+
+const creativeAi = makePlayer([
+  { side: "out", text: "Нужен креатив на онлайн-вебинар по маркетингу", typeMs: T_YOU },
+  {
+    side: "in",
+    name: "ИИ",
+    text: "Понял! Аудитория — предприниматели малого бизнеса? И где крутим рекламу?",
+    typeMs: T_AI,
+  },
+  { side: "out", text: "Да, малый бизнес. Instagram и Meta", typeMs: T_YOU },
+  {
+    side: "in",
+    name: "ИИ",
+    text: "Заголовок: «Как привлекать клиентов из соцсетей за один вечер». Подзаголовок: «Бесплатный онлайн-вебинар · сегодня в 19:00».",
+    typeMs: T_AI,
+  },
+  {
+    side: "in",
+    name: "ИИ",
+    text: "На картинке: предприниматель вечером за ноутбуком, на экране — растущий график заявок, тёплый свет.",
+    typeMs: T_AI,
+  },
+  { side: "out", text: "А можно вариант посмелее?", typeMs: T_YOU },
+  {
+    side: "in",
+    name: "ИИ",
+    text: "«5 ошибок в рекламе, из-за которых вы теряете клиентов».",
+    typeMs: T_AI,
+  },
+  {
+    side: "in",
+    name: "ИИ",
+    text: "Готово ✅ Заголовок, подзаголовок и картинка собраны — креатив готов, можете запускать 🚀",
+    typeMs: T_AI,
+  },
+]);
+
+// ---- Shared controls ----
+const human = computed(() => (mode.value === "leads" ? leadsHuman : creativeHuman));
+const ai = computed(() => (mode.value === "leads" ? leadsAi : creativeAi));
+const activeRunning = computed(() => human.value.running || ai.value.running);
+
+function startChats(): void {
+  if (activeRunning.value) return;
+  human.value.start();
+  ai.value.start();
+}
+
 const summary = computed(() => {
+  if (!ai.value.done) return null;
   if (mode.value === "leads") {
-    if (!aiDone.value) return null;
     return {
-      text: `ИИ ответил на все ${TOTAL} заявок за ${seconds(aiMs.value)} с — вручную это ${
-        youDone.value ? `${seconds(youMs.value)} с` : "около 5 минут"
-      }. И так круглосуточно, без устали и ошибок.`,
+      text: `ИИ обслужил клиента за ${seconds(leadsAi.ms)} с — быстрее живого менеджера и подробнее. И так с каждым, круглосуточно и без устали.`,
     };
   }
-  if (!crAiDone.value) return null;
   return {
-    text: `ИИ собрал креатив прямо в переписке за ${seconds(crAiMs.value)} с — а согласование с маркетологом растянулось бы на полдня.`,
+    text: `ИИ собрал креатив прямо в переписке за ${seconds(creativeAi.ms)} с — а согласование с маркетологом растянулось бы на полдня.`,
   };
 });
 
-function setMode(next: Mode): void {
-  mode.value = next;
-}
-
 onUnmounted(() => {
-  youTimer.stop();
-  aiTimer.stop();
-  crTimer.stop();
-  crAiTimer.stop();
-  if (aiTimeout) clearTimeout(aiTimeout);
-  if (crAiStep) clearInterval(crAiStep);
+  for (const p of [leadsHuman, leadsAi, creativeHuman, creativeAi]) p.stop();
 });
 </script>
 
@@ -267,8 +242,8 @@ onUnmounted(() => {
       >
         {{
           mode === "leads"
-            ? "Слева отвечайте на входящие вручную, как в обычном чате. Справа ту же очередь разберёт ИИ."
-            : "Слева — согласование креатива с маркетологом. Справа ИИ соберёт креатив сам, прямо в чате."
+            ? "Один клиент, два чата: слева его обслуживает менеджер вручную, справа — ИИ. Запустите оба и сравните."
+            : "Слева — согласование креатива с маркетологом. Справа ИИ собирает креатив прямо в переписке. Запустите оба чата."
         }}
       </p>
 
@@ -290,7 +265,7 @@ onUnmounted(() => {
             :class="
               mode === tab.id ? 'bg-graphite text-white' : 'text-graphite/70 hover:text-graphite'
             "
-            @click="setMode(tab.id as Mode)"
+            @click="mode = tab.id as Mode"
           >
             {{ tab.label }}
           </button>
@@ -299,219 +274,64 @@ onUnmounted(() => {
 
       <div class="border-t border-rule px-4 py-12 sm:px-6 sm:py-16">
         <div class="grid gap-3 sm:gap-4 lg:grid-cols-2">
-          <!-- LEFT (you / manual) -->
+          <!-- LEFT: human -->
           <div data-reveal class="flex flex-col rounded-2xl border border-rule bg-snow p-5 sm:p-6">
-            <!-- leads -->
-            <template v-if="mode === 'leads'">
-              <div class="flex items-baseline justify-between">
-                <h3 class="text-lg font-medium sm:text-xl">Вы — вручную</h3>
-                <span class="text-sm tabular-nums text-quiet"
-                  >{{ Math.min(youIdx, TOTAL) }} / {{ TOTAL }} · {{ seconds(youMs) }} с</span
-                >
-              </div>
-              <div
-                class="mt-4 flex h-64 flex-col gap-2 overflow-y-auto rounded-xl bg-stone/60 p-3 text-sm"
-              >
-                <template v-for="(lead, i) in leads.slice(0, youIdx)" :key="'y' + i">
-                  <p class="max-w-[85%] self-start rounded-2xl rounded-bl-sm bg-white px-3 py-2">
-                    <span class="mb-0.5 block text-xs text-quiet">{{ lead.from }}</span>
-                    {{ lead.text }}
-                  </p>
-                  <p
-                    class="max-w-[85%] self-end rounded-2xl rounded-br-sm bg-peach-soft px-3 py-2 text-peach-ink"
-                  >
-                    {{ youReplies[i] }}
-                  </p>
-                </template>
-                <p
-                  v-if="youCurrent"
-                  class="max-w-[85%] self-start rounded-2xl rounded-bl-sm bg-white px-3 py-2"
-                >
-                  <span class="mb-0.5 block text-xs text-quiet">{{ youCurrent.from }}</span>
-                  {{ youCurrent.text }}
-                </p>
-                <p v-else class="m-auto text-center text-sm font-medium text-graphite/70">
-                  Готово за {{ seconds(youMs) }} с 😮‍💨
-                </p>
-              </div>
-              <form class="mt-3 flex gap-2" @submit.prevent="sendYou">
-                <input
-                  v-model="youInput"
-                  :disabled="youDone"
-                  type="text"
-                  placeholder="Напишите ответ…"
-                  aria-label="Ваш ответ на заявку"
-                  class="h-11 min-w-0 flex-1 rounded-full border border-rule bg-white px-4 text-sm text-graphite outline-none focus:border-graphite/40 disabled:opacity-50"
-                />
-                <button
-                  type="submit"
-                  :disabled="youDone"
-                  class="h-11 shrink-0 rounded-full bg-graphite px-5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
-                >
-                  Ответить
-                </button>
-              </form>
-            </template>
-
-            <!-- creative -->
-            <template v-else>
-              <div class="flex items-baseline justify-between">
-                <h3 class="text-lg font-medium sm:text-xl">Вы и маркетолог Руслан</h3>
-                <span class="text-sm tabular-nums text-quiet"
-                  >{{ Math.min(crStep, CREATIVE_TOTAL) }} / {{ CREATIVE_TOTAL }} ·
-                  {{ seconds(crMs) }} с</span
-                >
-              </div>
-              <div
-                class="mt-4 flex h-64 flex-col gap-2 overflow-y-auto rounded-xl bg-stone/60 p-3 text-sm"
-              >
-                <p v-if="crStep === 0" class="m-auto max-w-[16rem] text-center text-quiet">
-                  Жмите «Дальше» — это обычная переписка, пока согласуете креатив.
-                </p>
-                <p
-                  v-for="(m, i) in crShown"
-                  :key="'c' + i"
-                  class="max-w-[88%] rounded-2xl px-3 py-2"
-                  :class="
-                    m.from === 'Вы'
-                      ? 'self-end rounded-br-sm bg-peach-soft text-peach-ink'
-                      : 'self-start rounded-bl-sm bg-white'
-                  "
-                >
-                  <span v-if="m.from !== 'Вы'" class="mb-0.5 block text-xs text-quiet">{{
-                    m.from
-                  }}</span>
-                  {{ m.text }}
-                </p>
-                <p
-                  v-if="crDone"
-                  class="mt-1 self-center text-center text-sm font-medium text-graphite/70"
-                >
-                  Полдня переписки — а креатив ещё не готов.
-                </p>
-              </div>
-              <button
-                type="button"
-                :disabled="crDone"
-                class="mt-3 h-11 rounded-full bg-graphite px-5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
-                @click="nextCreative"
-              >
-                {{ crDone ? "Переписка окончена" : "Дальше →" }}
-              </button>
-            </template>
+            <div class="flex items-baseline justify-between">
+              <h3 class="text-lg font-medium sm:text-xl">
+                {{ mode === "leads" ? "Менеджер — вручную" : "Вы и маркетолог Руслан" }}
+              </h3>
+              <span class="text-sm tabular-nums text-quiet">{{ seconds(human.ms) }} с</span>
+            </div>
+            <ChatThread
+              class="mt-4"
+              theme="light"
+              :messages="human.shown"
+              :typing="human.typing"
+              :started="human.running"
+              :idle="
+                mode === 'leads'
+                  ? 'Здесь менеджер отвечает клиенту вручную.'
+                  : 'Здесь согласование креатива с маркетологом.'
+              "
+            />
           </div>
 
-          <!-- RIGHT (AI) -->
+          <!-- RIGHT: AI -->
           <div
             data-reveal
             data-delay="100"
             class="flex flex-col rounded-2xl bg-graphite p-5 text-white sm:p-6"
           >
-            <!-- leads -->
-            <template v-if="mode === 'leads'">
-              <div class="flex items-baseline justify-between">
-                <h3 class="text-lg font-medium sm:text-xl">ИИ — автоматически</h3>
-                <span class="text-sm tabular-nums text-white/60"
-                  >{{ aiPairs }} / {{ TOTAL }} · {{ seconds(aiMs) }} с</span
-                >
-              </div>
-              <div
-                class="mt-4 flex h-64 flex-col gap-2 overflow-y-auto rounded-xl bg-white/5 p-3 text-sm"
-              >
-                <template v-if="aiRunning || aiPairs > 0">
-                  <template v-for="(lead, i) in aiShown" :key="'a' + i">
-                    <p
-                      class="max-w-[85%] self-start rounded-2xl rounded-bl-sm bg-white/10 px-3 py-2 text-white/90"
-                    >
-                      <span class="mb-0.5 block text-xs text-white/50">{{ lead.from }}</span>
-                      {{ lead.text }}
-                    </p>
-                    <p
-                      class="max-w-[85%] self-end rounded-2xl rounded-br-sm bg-peach-strong px-3 py-2 text-graphite"
-                    >
-                      {{ lead.reply }}
-                    </p>
-                  </template>
-                  <!-- current client: typing, then message + AI typing -->
-                  <p
-                    v-if="aiClientTyping && aiCurrent"
-                    class="max-w-[85%] self-start rounded-2xl rounded-bl-sm bg-white/10 px-3 py-2 text-white/90"
-                  >
-                    <span class="mb-0.5 block text-xs text-white/50">{{ aiCurrent.from }}</span>
-                    <span class="typing" aria-label="печатает"><span /><span /><span /></span>
-                  </p>
-                  <p
-                    v-if="aiCurClient && aiCurrent"
-                    class="max-w-[85%] self-start rounded-2xl rounded-bl-sm bg-white/10 px-3 py-2 text-white/90"
-                  >
-                    <span class="mb-0.5 block text-xs text-white/50">{{ aiCurrent.from }}</span>
-                    {{ aiCurrent.text }}
-                  </p>
-                  <p
-                    v-if="aiAiTyping"
-                    class="max-w-[85%] self-end rounded-2xl rounded-br-sm bg-peach-strong px-3 py-2 text-graphite"
-                  >
-                    <span class="typing" aria-label="печатает"><span /><span /><span /></span>
-                  </p>
-                </template>
-                <p v-else class="m-auto max-w-[16rem] text-center text-sm text-white/55">
-                  Нажмите «Запустить ИИ» — он ответит на все {{ TOTAL }} заявок сам.
-                </p>
-              </div>
-              <button
-                type="button"
-                :disabled="aiRunning"
-                class="mt-3 h-11 rounded-full bg-white px-5 text-sm font-semibold text-graphite transition-opacity hover:opacity-90 disabled:opacity-60"
-                @click="runAi"
-              >
-                {{ aiRunning ? "Обрабатывает…" : aiDone ? "Запустить заново" : "Запустить ИИ" }}
-              </button>
-            </template>
-
-            <!-- creative -->
-            <template v-else>
-              <div class="flex items-baseline justify-between">
-                <h3 class="text-lg font-medium sm:text-xl">ИИ — автоматически</h3>
-                <span class="text-sm tabular-nums text-white/60">{{ seconds(crAiMs) }} с</span>
-              </div>
-              <div
-                class="mt-4 flex h-64 flex-col gap-2 overflow-y-auto rounded-xl bg-white/5 p-3 text-sm"
-              >
-                <p v-if="crAiIdx === 0" class="m-auto max-w-[17rem] text-center text-white/55">
-                  Нажмите «Собрать креатив» — обсудите задачу с ИИ прямо в чате, он предложит
-                  варианты.
-                </p>
-                <template v-else>
-                  <p
-                    v-for="(m, i) in crAiShown"
-                    :key="'ca' + i"
-                    class="max-w-[88%] rounded-2xl px-3 py-2"
-                    :class="
-                      m.from === 'Вы'
-                        ? 'self-end rounded-br-sm bg-peach-strong text-graphite'
-                        : 'self-start rounded-bl-sm bg-white/10 text-white/90'
-                    "
-                  >
-                    <span v-if="m.from === 'ИИ'" class="mb-0.5 block text-xs text-white/50"
-                      >ИИ</span
-                    >
-                    {{ m.text }}
-                  </p>
-                </template>
-              </div>
-              <button
-                type="button"
-                :disabled="crAiRunning"
-                class="mt-3 h-11 rounded-full bg-white px-5 text-sm font-semibold text-graphite transition-opacity hover:opacity-90 disabled:opacity-60"
-                @click="runCreativeAi"
-              >
-                {{ crAiRunning ? "Печатает…" : crAiDone ? "Собрать заново" : "Собрать креатив" }}
-              </button>
-            </template>
+            <div class="flex items-baseline justify-between">
+              <h3 class="text-lg font-medium sm:text-xl">ИИ — автоматически</h3>
+              <span class="text-sm tabular-nums text-white/60">{{ seconds(ai.ms) }} с</span>
+            </div>
+            <ChatThread
+              class="mt-4"
+              theme="dark"
+              :messages="ai.shown"
+              :typing="ai.typing"
+              :started="ai.running"
+              :idle="
+                mode === 'leads'
+                  ? 'Здесь того же клиента обслуживает ИИ.'
+                  : 'Здесь ИИ собирает креатив прямо в чате.'
+              "
+            />
           </div>
         </div>
 
-        <!-- Result -->
+        <div class="mt-6 flex justify-center sm:mt-8">
+          <button
+            type="button"
+            :disabled="activeRunning"
+            class="h-12 rounded-full bg-graphite px-8 text-base font-semibold text-white shadow-2xl transition-opacity hover:opacity-90 disabled:opacity-50"
+            @click="startChats"
+          >
+            {{ activeRunning ? "Чаты идут…" : summary ? "Запустить заново" : "Запустить чаты" }}
+          </button>
+        </div>
+
         <div
           v-if="summary"
           class="mt-6 flex flex-col items-center gap-4 rounded-2xl border border-peach-line bg-peach-soft/50 px-5 py-6 text-center sm:mt-8"
