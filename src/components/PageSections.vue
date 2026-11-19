@@ -230,7 +230,7 @@ import { afterSeminar, bonuses, facts, partners, price, speakers, tools } from "
         :duration="0.4"
         class="px-4 pt-12 pb-10 text-3xl font-medium leading-tight sm:px-6 sm:pt-16 sm:pb-12 sm:text-5xl"
       >
-        После семинара вы будете знать:
+        После семинара вы:
       </TextAnimate>
       <div class="border-t border-rule px-4 py-12 sm:px-6 sm:py-16">
         <ul class="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
