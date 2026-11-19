@@ -151,6 +151,8 @@ import { afterSeminar, bonuses, facts, partners, price, speakers, tools } from "
     <div class="border-t border-rule" />
   </section>
 
+  <LeadMagnet />
+
   <section class="overflow-x-clip bg-stone text-graphite" aria-labelledby="tools-title">
     <div class="relative mx-auto max-w-6xl border-x border-rule">
       <TextAnimate
@@ -215,8 +217,6 @@ import { afterSeminar, bonuses, facts, partners, price, speakers, tools } from "
     </div>
     <div class="border-t border-rule" />
   </section>
-
-  <LeadMagnet />
 
   <section
     id="results"
