@@ -161,7 +161,7 @@ import { afterSeminar, bonuses, facts, partners, price, speakers, tools } from "
         :duration="0.4"
         class="px-4 pt-12 pb-10 text-3xl font-medium leading-tight sm:px-6 sm:pt-16 sm:pb-12 sm:text-5xl"
       >
-        Свяжем маркетинг, автоматизацию и финансы в единую цепочку
+        Покажем, как связать маркетинг, автоматизацию и финансы в единую эффективную цепочку
       </TextAnimate>
       <div class="border-t border-rule px-4 py-12 sm:px-6 sm:py-16">
         <ul class="flex flex-col gap-2 sm:gap-3 lg:flex-row lg:items-stretch lg:gap-2">
