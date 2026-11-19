@@ -27,6 +27,8 @@
 
 @layer base {
   html {
+    /* Light-only design: stop browsers' auto dark mode from inverting colors. */
+    color-scheme: only light;
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
