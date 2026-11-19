@@ -87,46 +87,101 @@ function makePlayer(script: Step[]) {
   return reactive({ shown, typing, ms, running, done, start, stop });
 }
 
-// ---- Scenario 1: one client, served by a manager vs the AI ----
+// ---- Scenario 1: one client buying a winter jacket ----
 const CLIENT = "Айгерим";
-const T_CLIENT = 2200;
-const T_HUMAN = 4300;
 const T_AI = 1500;
 
-const leadsHuman = makePlayer([
-  { side: "in", name: CLIENT, text: "Здравствуйте! Сколько стоит?", typeMs: T_CLIENT },
-  { side: "out", text: "Здравствуйте, 15 000 ₸", typeMs: T_HUMAN },
-  { side: "in", name: CLIENT, text: "Доставка по Караганде есть?", typeMs: T_CLIENT },
-  { side: "out", text: "Да, есть", typeMs: T_HUMAN },
-  { side: "in", name: CLIENT, text: "А можно в рассрочку?", typeMs: T_CLIENT },
-  { side: "out", text: "Сейчас уточню у руководителя, отвечу позже", typeMs: T_HUMAN + 600 },
-  { side: "in", name: CLIENT, text: "Оплатить картой можно?", typeMs: T_CLIENT },
-  { side: "out", text: "Да, можно картой", typeMs: T_HUMAN },
-]);
+// Short, lifelike questions from the client (left chat: you answer by hand).
+const leadsClientQs = [
+  "Здравствуйте! Зимний пуховик есть?",
+  "Размер M есть?",
+  "Сколько стоит?",
+  "Доставите в Караганду?",
+];
+
+interface ChatLine {
+  side: "in" | "out";
+  name?: string;
+  text: string;
+}
+
+const lhShown = ref<ChatLine[]>([]);
+const lhTyping = ref<{ side: "in"; name?: string } | null>(null);
+const lhInput = ref("");
+const lhStep = ref(0);
+const lhMs = ref(0);
+const lhStarted = ref(false);
+const lhDone = ref(false);
+const lhAwaiting = ref(false); // a client question is waiting for your reply
+const lhTimer = makeTimer(lhMs);
+let lhTo: number | undefined;
+const lhRunning = computed(() => lhStarted.value && !lhDone.value);
+
+function nextClient(): void {
+  if (lhStep.value >= leadsClientQs.length) {
+    lhDone.value = true;
+    lhTyping.value = null;
+    lhTimer.stop();
+    return;
+  }
+  lhTyping.value = { side: "in", name: CLIENT };
+  lhTo = window.setTimeout(() => {
+    lhTyping.value = null;
+    lhShown.value = [
+      ...lhShown.value,
+      { side: "in", name: CLIENT, text: leadsClientQs[lhStep.value] },
+    ];
+    lhStep.value += 1;
+    lhAwaiting.value = true;
+  }, 1500);
+}
+
+function startLeadsLeft(): void {
+  if (lhTo) clearTimeout(lhTo);
+  lhShown.value = [];
+  lhInput.value = "";
+  lhStep.value = 0;
+  lhMs.value = 0;
+  lhAwaiting.value = false;
+  lhDone.value = false;
+  lhStarted.value = true;
+  lhTimer.start();
+  nextClient();
+}
+
+function sendLeadsLeft(): void {
+  if (!lhAwaiting.value) return;
+  const text = lhInput.value.trim();
+  if (!text) return;
+  lhShown.value = [...lhShown.value, { side: "out", text }];
+  lhInput.value = "";
+  lhAwaiting.value = false;
+  nextClient();
+}
 
 const leadsAi = makePlayer([
-  { side: "in", name: CLIENT, text: "Здравствуйте! Сколько стоит?", typeMs: T_CLIENT },
+  { side: "in", name: CLIENT, text: "Здравствуйте! Зимний пуховик есть?", typeMs: 2000 },
   {
     side: "out",
-    text: "Здравствуйте, Айгерим! Спасибо, что написали 🙌 Участие стоит 15 000 ₸ — в цену уже входят материалы и консультация после. Оформить вам заявку прямо сейчас?",
+    text: "Здравствуйте, Айгерим! Да, зимние пуховики в наличии — тёплые, до −30°. Подскажите ваш размер и цвет, подберу и отложу за вами 🙌",
     typeMs: T_AI,
   },
-  { side: "in", name: CLIENT, text: "Доставка по Караганде есть?", typeMs: T_CLIENT },
+  { side: "in", name: CLIENT, text: "Размер M есть?", typeMs: 2000 },
   {
     side: "out",
-    text: "Да, конечно! По Караганде доставляем за 1–2 дня, курьером до двери. Подскажите район — скажу точное время и рассчитаю доставку.",
+    text: "Да, размер M есть в чёрном, синем и бежевом. С капюшоном, наполнитель держит до −30°. Какой цвет ближе?",
     typeMs: T_AI,
   },
-  { side: "in", name: CLIENT, text: "А можно в рассрочку?", typeMs: T_CLIENT },
+  { side: "in", name: CLIENT, text: "Сколько стоит?", typeMs: 2000 },
   {
     side: "out",
-    text: "Да, есть рассрочка на 3 месяца без переплаты через Kaspi — это примерно 5 000 ₸ в месяц. Хотите, подскажу, как оформить за пару минут?",
+    text: "Пуховик стоит 15 000 ₸. Сегодня действует скидка 10% — выйдет 13 500 ₸. Оформить, пока есть ваш размер?",
     typeMs: T_AI,
   },
-  { side: "in", name: CLIENT, text: "Оплатить картой можно?", typeMs: T_CLIENT },
+  { side: "in", name: CLIENT, text: "Доставите в Караганду?", typeMs: 2000 },
   {
     side: "out",
-    text: "Конечно — принимаем картой, наличными и через Kaspi QR, как вам удобнее, всё с чеком. Давайте оформлю заказ и забронирую за вами?",
+    text: "Конечно! По Караганде — за 1–2 дня, курьером до двери. Оплата при получении картой или Kaspi. Оформляю заказ?",
     typeMs: T_AI,
   },
 ]);
@@ -197,21 +252,29 @@ const creativeAi = makePlayer([
 ]);
 
 // ---- Shared controls ----
-const human = computed(() => (mode.value === "leads" ? leadsHuman : creativeHuman));
 const ai = computed(() => (mode.value === "leads" ? leadsAi : creativeAi));
-const activeRunning = computed(() => human.value.running || ai.value.running);
+const activeRunning = computed(() =>
+  mode.value === "leads"
+    ? lhRunning.value || leadsAi.running
+    : creativeHuman.running || creativeAi.running,
+);
 
 function startChats(): void {
   if (activeRunning.value) return;
-  human.value.start();
-  ai.value.start();
+  if (mode.value === "leads") {
+    startLeadsLeft();
+    leadsAi.start();
+  } else {
+    creativeHuman.start();
+    creativeAi.start();
+  }
 }
 
 const summary = computed(() => {
   if (!ai.value.done) return null;
   if (mode.value === "leads") {
     return {
-      text: `ИИ обслужил клиента за ${seconds(leadsAi.ms)} с — быстрее живого менеджера и подробнее. И так с каждым, круглосуточно и без устали.`,
+      text: `ИИ обслужил клиента за ${seconds(leadsAi.ms)} с — пока вы отвечали вручную, он успел подробнее и уже предложил оформить. И так с каждым, круглосуточно.`,
     };
   }
   return {
@@ -220,7 +283,9 @@ const summary = computed(() => {
 });
 
 onUnmounted(() => {
-  for (const p of [leadsHuman, leadsAi, creativeHuman, creativeAi]) p.stop();
+  for (const p of [leadsAi, creativeHuman, creativeAi]) p.stop();
+  if (lhTo) clearTimeout(lhTo);
+  lhTimer.stop();
 });
 </script>
 
@@ -242,7 +307,7 @@ onUnmounted(() => {
       >
         {{
           mode === "leads"
-            ? "Один клиент, два чата: слева его обслуживает менеджер вручную, справа — ИИ. Запустите оба и сравните."
+            ? "Один клиент, два чата: слева отвечайте ему сами, справа — ИИ. Запустите оба и сравните."
             : "Слева — согласование креатива с маркетологом. Справа ИИ собирает креатив прямо в переписке. Запустите оба чата."
         }}
       </p>
@@ -274,25 +339,55 @@ onUnmounted(() => {
 
       <div class="border-t border-rule px-4 py-12 sm:px-6 sm:py-16">
         <div class="grid gap-3 sm:gap-4 lg:grid-cols-2">
-          <!-- LEFT: human -->
+          <!-- LEFT: you / human -->
           <div data-reveal class="flex flex-col rounded-2xl border border-rule bg-snow p-5 sm:p-6">
             <div class="flex items-baseline justify-between">
               <h3 class="text-lg font-medium sm:text-xl">
-                {{ mode === "leads" ? "Менеджер — вручную" : "Вы и маркетолог Руслан" }}
+                {{ mode === "leads" ? "Вы — отвечаете сами" : "Вы и маркетолог Руслан" }}
               </h3>
-              <span class="text-sm tabular-nums text-quiet">{{ seconds(human.ms) }} с</span>
+              <span class="text-sm tabular-nums text-quiet"
+                >{{ seconds(mode === "leads" ? lhMs : creativeHuman.ms) }} с</span
+              >
             </div>
+
+            <!-- leads: you answer the client by hand -->
+            <template v-if="mode === 'leads'">
+              <ChatThread
+                class="mt-4"
+                theme="light"
+                :messages="lhShown"
+                :typing="lhTyping"
+                :started="lhStarted"
+                idle="Запустите чаты и отвечайте клиенту сами — как в жизни."
+              />
+              <form class="mt-3 flex gap-2" @submit.prevent="sendLeadsLeft">
+                <input
+                  v-model="lhInput"
+                  :disabled="!lhAwaiting"
+                  type="text"
+                  placeholder="Ваш ответ клиенту…"
+                  aria-label="Ваш ответ клиенту"
+                  class="h-11 min-w-0 flex-1 rounded-full border border-rule bg-white px-4 text-sm text-graphite outline-none focus:border-graphite/40 disabled:opacity-50"
+                />
+                <button
+                  type="submit"
+                  :disabled="!lhAwaiting"
+                  class="h-11 shrink-0 rounded-full bg-graphite px-5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+                >
+                  Ответить
+                </button>
+              </form>
+            </template>
+
+            <!-- creative: approval chat with the marketer -->
             <ChatThread
+              v-else
               class="mt-4"
               theme="light"
-              :messages="human.shown"
-              :typing="human.typing"
-              :started="human.running"
-              :idle="
-                mode === 'leads'
-                  ? 'Здесь менеджер отвечает клиенту вручную.'
-                  : 'Здесь согласование креатива с маркетологом.'
-              "
+              :messages="creativeHuman.shown"
+              :typing="creativeHuman.typing"
+              :started="creativeHuman.running"
+              idle="Здесь согласование креатива с маркетологом."
             />
           </div>
 
