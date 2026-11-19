@@ -121,17 +121,17 @@ interface Msg {
 const creativeScript: Msg[] = [
   {
     from: "Маркетолог",
-    text: "Привет! Нужен креатив на онлайн-вебинар по маркетингу. Накидал заголовки.",
+    text: "Салем! По вебинару накину пару заголовков, гляну как время будет 🙌",
   },
-  { from: "Вы", text: "Показывай" },
-  { from: "Маркетолог", text: "«Маркетинг, который приводит клиентов». Как тебе?" },
-  { from: "Вы", text: "Надо согласовать с руководителем…" },
-  { from: "Руководитель", text: "Слишком общо. Нужно конкретнее и про результат." },
-  { from: "Вы", text: "Маркетолог, руководитель просит конкретики" },
-  { from: "Маркетолог", text: "Ок: «Как привлекать клиентов из соцсетей за один вечер»." },
-  { from: "Вы", text: "Норм. А подзаголовок и картинка?" },
-  { from: "Маркетолог", text: "Подзаголовок придумаю, а картинку — к завтрашнему дню." },
-  { from: "Вы", text: "Опять ждать день…" },
+  { from: "Вы", text: "Давай только побыстрее, запуск на выходных" },
+  { from: "Маркетолог", text: "«Маркетинг, который приводит клиентов» — норм?" },
+  { from: "Вы", text: "Мне ок, но надо шефу показать" },
+  { from: "Руководитель", text: "Общо как-то. И почему без оффера и цены?" },
+  { from: "Вы", text: "Маркетолог, шеф просит конкретнее и добавить оффер" },
+  { from: "Маркетолог", text: "Принял. Картинку дизайнер сделает, он щас занят, заказов много 🙈" },
+  { from: "Вы", text: "Опять ждать… у нас же запуск горит" },
+  { from: "Маркетолог", text: "К обеду скину, край — завтра утром" },
+  { from: "Вы", text: "Ну давай хоть к обеду 🙏" },
 ];
 const CREATIVE_TOTAL = creativeScript.length;
 
@@ -148,31 +148,54 @@ function nextCreative(): void {
   if (crDone.value) crTimer.stop();
 }
 
-const creativeOutput = {
-  headline: "Как привлекать клиентов из соцсетей за один вечер",
-  sub: "Бесплатный онлайн-вебинар по маркетингу · сегодня в 19:00",
-  image:
-    "Предприниматель вечером за ноутбуком, на экране — растущий график заявок, тёплый свет и уверенная улыбка.",
-  alts: [
-    "5 ошибок в рекламе, из-за которых вы теряете клиентов",
-    "Как сделать, чтобы реклама наконец окупалась",
-  ],
-};
+interface AiMsg {
+  from: "Вы" | "ИИ";
+  text: string;
+}
 
-const crAiState = ref<"idle" | "running" | "done">("idle");
+// The AI side is a real back-and-forth: it asks, proposes and adjusts.
+const crDialog: AiMsg[] = [
+  { from: "Вы", text: "Нужен креатив на онлайн-вебинар по маркетингу" },
+  { from: "ИИ", text: "Понял. Аудитория — предприниматели малого бизнеса? И где крутим рекламу?" },
+  { from: "Вы", text: "Да, малый бизнес. Instagram и Meta" },
+  {
+    from: "ИИ",
+    text: "Заголовок: «Как привлекать клиентов из соцсетей за один вечер». Подзаголовок: «Бесплатный онлайн-вебинар · сегодня в 19:00».",
+  },
+  {
+    from: "ИИ",
+    text: "На картинке: предприниматель вечером за ноутбуком, на экране — растущий график заявок, тёплый свет.",
+  },
+  { from: "Вы", text: "А можно вариант посмелее?" },
+  {
+    from: "ИИ",
+    text: "«5 ошибок в рекламе, из-за которых вы теряете клиентов». Готово — можно запускать 🚀",
+  },
+];
+
+const crAiIdx = ref(0);
 const crAiMs = ref(0);
+const crAiRunning = ref(false);
 const crAiTimer = makeTimer(crAiMs);
-let crAiDelay: number | undefined;
+let crAiStep: number | undefined;
+const crAiShown = computed(() => crDialog.slice(0, crAiIdx.value));
+const crAiDone = computed(() => crAiIdx.value >= crDialog.length && !crAiRunning.value);
 
 function runCreativeAi(): void {
-  if (crAiState.value === "running") return;
-  crAiState.value = "running";
+  if (crAiRunning.value) return;
+  crAiIdx.value = 0;
   crAiMs.value = 0;
+  crAiRunning.value = true;
   crAiTimer.start();
-  crAiDelay = window.setTimeout(() => {
-    crAiTimer.stop();
-    crAiState.value = "done";
-  }, 1600);
+  crAiStep = window.setInterval(() => {
+    crAiIdx.value += 1;
+    if (crAiIdx.value >= crDialog.length) {
+      if (crAiStep) clearInterval(crAiStep);
+      crAiStep = undefined;
+      crAiTimer.stop();
+      crAiRunning.value = false;
+    }
+  }, 280);
 }
 
 // ---------- Shared result ----------
@@ -185,9 +208,9 @@ const summary = computed(() => {
       }. И так круглосуточно, без устали и ошибок.`,
     };
   }
-  if (crAiState.value !== "done") return null;
+  if (!crAiDone.value) return null;
   return {
-    text: `ИИ собрал готовый креатив за ${seconds(crAiMs.value)} с — а согласования с маркетологом и руководителем растянулись бы на полдня.`,
+    text: `ИИ собрал креатив прямо в переписке за ${seconds(crAiMs.value)} с — а согласования с маркетологом и руководителем растянулись бы на полдня.`,
   };
 });
 
@@ -201,7 +224,7 @@ onUnmounted(() => {
   crTimer.stop();
   crAiTimer.stop();
   if (aiStep) clearInterval(aiStep);
-  if (crAiDelay) clearTimeout(crAiDelay);
+  if (crAiStep) clearInterval(crAiStep);
 });
 </script>
 
@@ -409,59 +432,38 @@ onUnmounted(() => {
                 <h3 class="text-lg font-medium sm:text-xl">ИИ — автоматически</h3>
                 <span class="text-sm tabular-nums text-white/60">{{ seconds(crAiMs) }} с</span>
               </div>
-              <div class="mt-4 h-64 overflow-y-auto rounded-xl bg-white/5 p-3 text-sm">
-                <p
-                  v-if="crAiState === 'idle'"
-                  class="flex h-full items-center justify-center px-2 text-center text-white/55"
-                >
-                  Нажмите «Собрать креатив» — ИИ предложит заголовки, подзаголовок и идею картинки.
+              <div
+                class="mt-4 flex h-64 flex-col gap-2 overflow-y-auto rounded-xl bg-white/5 p-3 text-sm"
+              >
+                <p v-if="crAiIdx === 0" class="m-auto max-w-[17rem] text-center text-white/55">
+                  Нажмите «Собрать креатив» — обсудите задачу с ИИ прямо в чате, он предложит
+                  варианты.
                 </p>
-                <p
-                  v-else-if="crAiState === 'running'"
-                  class="flex h-full items-center justify-center text-white/70"
-                >
-                  Генерирует креатив…
-                </p>
-                <div v-else class="flex flex-col gap-3">
-                  <div>
-                    <span class="text-xs tracking-wide text-white/50 uppercase">Заголовок</span>
-                    <p class="mt-1 font-medium text-white">{{ creativeOutput.headline }}</p>
-                  </div>
-                  <div>
-                    <span class="text-xs tracking-wide text-white/50 uppercase">Подзаголовок</span>
-                    <p class="mt-1 text-white/90">{{ creativeOutput.sub }}</p>
-                  </div>
-                  <div>
-                    <span class="text-xs tracking-wide text-white/50 uppercase"
-                      >Что на картинке</span
+                <template v-else>
+                  <p
+                    v-for="(m, i) in crAiShown"
+                    :key="'ca' + i"
+                    class="max-w-[88%] rounded-2xl px-3 py-2"
+                    :class="
+                      m.from === 'Вы'
+                        ? 'self-end rounded-br-sm bg-peach-strong text-graphite'
+                        : 'self-start rounded-bl-sm bg-white/10 text-white/90'
+                    "
+                  >
+                    <span v-if="m.from === 'ИИ'" class="mb-0.5 block text-xs text-white/50"
+                      >ИИ</span
                     >
-                    <p class="mt-1 text-white/90">{{ creativeOutput.image }}</p>
-                  </div>
-                  <div>
-                    <span class="text-xs tracking-wide text-white/50 uppercase"
-                      >Ещё варианты заголовка</span
-                    >
-                    <ul class="mt-1 flex flex-col gap-1">
-                      <li v-for="alt in creativeOutput.alts" :key="alt" class="text-white/80">
-                        — {{ alt }}
-                      </li>
-                    </ul>
-                  </div>
-                </div>
+                    {{ m.text }}
+                  </p>
+                </template>
               </div>
               <button
                 type="button"
-                :disabled="crAiState === 'running'"
+                :disabled="crAiRunning"
                 class="mt-3 h-11 rounded-full bg-white px-5 text-sm font-semibold text-graphite transition-opacity hover:opacity-90 disabled:opacity-60"
                 @click="runCreativeAi"
               >
-                {{
-                  crAiState === "running"
-                    ? "Генерирует…"
-                    : crAiState === "done"
-                      ? "Собрать заново"
-                      : "Собрать креатив"
-                }}
+                {{ crAiRunning ? "Печатает…" : crAiDone ? "Собрать заново" : "Собрать креатив" }}
               </button>
             </template>
           </div>
