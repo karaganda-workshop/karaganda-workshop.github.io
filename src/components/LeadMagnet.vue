@@ -11,6 +11,7 @@
 import { computed, onUnmounted, reactive, ref } from "vue";
 import BookLink from "@/components/BookLink.vue";
 import ChatThread from "@/components/ChatThread.vue";
+import WhatsAppChat from "@/components/WhatsAppChat.vue";
 import TextAnimate from "@/components/ui/TextAnimate.vue";
 
 type Mode = "leads" | "creative";
@@ -350,35 +351,20 @@ onUnmounted(() => {
               >
             </div>
 
-            <!-- leads: you answer the client by hand -->
-            <template v-if="mode === 'leads'">
-              <ChatThread
-                class="mt-4"
-                theme="light"
-                :messages="lhShown"
-                :typing="lhTyping"
-                :started="lhStarted"
-                idle="Запустите чаты и отвечайте клиенту сами — как в жизни."
-              />
-              <form class="mt-3 flex gap-2" @submit.prevent="sendLeadsLeft">
-                <input
-                  v-model="lhInput"
-                  :disabled="!lhAwaiting"
-                  type="text"
-                  placeholder="Ваш ответ клиенту…"
-                  aria-label="Ваш ответ клиенту"
-                  class="h-11 min-w-0 flex-1 rounded-full border border-rule bg-white px-4 text-sm text-graphite outline-none focus:border-graphite/40 disabled:opacity-50"
-                />
-                <button
-                  type="submit"
-                  :disabled="!lhAwaiting"
-                  class="h-11 shrink-0 rounded-full bg-graphite px-5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
-                >
-                  Ответить
-                </button>
-              </form>
-            </template>
-
+            <!-- leads: WhatsApp chat you answer by hand -->
+            <WhatsAppChat
+              v-if="mode === 'leads'"
+              class="mt-4"
+              :contact="CLIENT"
+              :messages="lhShown"
+              :typing="lhTyping"
+              :started="lhStarted"
+              :interactive="true"
+              :can-send="lhAwaiting"
+              v-model="lhInput"
+              idle="Запустите чаты и отвечайте клиенту сами — как в жизни."
+              @send="sendLeadsLeft"
+            />
             <!-- creative: approval chat with the marketer -->
             <ChatThread
               v-else
@@ -395,23 +381,35 @@ onUnmounted(() => {
           <div
             data-reveal
             data-delay="100"
-            class="flex flex-col rounded-2xl bg-graphite p-5 text-white sm:p-6"
+            class="flex flex-col rounded-2xl p-5 sm:p-6"
+            :class="mode === 'leads' ? 'border border-rule bg-snow' : 'bg-graphite text-white'"
           >
             <div class="flex items-baseline justify-between">
               <h3 class="text-lg font-medium sm:text-xl">ИИ — автоматически</h3>
-              <span class="text-sm tabular-nums text-white/60">{{ seconds(ai.ms) }} с</span>
+              <span
+                class="text-sm tabular-nums"
+                :class="mode === 'leads' ? 'text-quiet' : 'text-white/60'"
+                >{{ seconds(ai.ms) }} с</span
+              >
             </div>
+            <WhatsAppChat
+              v-if="mode === 'leads'"
+              class="mt-4"
+              :contact="CLIENT"
+              :messages="ai.shown"
+              :typing="ai.typing"
+              :started="ai.running"
+              :interactive="false"
+              idle="Здесь того же клиента обслуживает ИИ."
+            />
             <ChatThread
+              v-else
               class="mt-4"
               theme="dark"
               :messages="ai.shown"
               :typing="ai.typing"
               :started="ai.running"
-              :idle="
-                mode === 'leads'
-                  ? 'Здесь того же клиента обслуживает ИИ.'
-                  : 'Здесь ИИ собирает креатив прямо в чате.'
-              "
+              idle="Здесь ИИ собирает креатив прямо в чате."
             />
           </div>
         </div>
