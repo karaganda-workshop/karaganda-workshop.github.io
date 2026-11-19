@@ -160,7 +160,7 @@ function submit(): void {
           type="text"
           placeholder="Сообщение"
           :aria-label="interactive ? 'Ваш ответ клиенту' : undefined"
-          class="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-graphite/45 disabled:opacity-60"
+          class="min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-graphite/45 disabled:opacity-60"
           @input="onInput"
         />
         <svg viewBox="0 0 24 24" class="h-5 w-5 shrink-0 text-graphite/40" aria-hidden="true">
