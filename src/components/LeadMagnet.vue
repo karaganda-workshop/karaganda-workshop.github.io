@@ -87,29 +87,48 @@ function sendYou(): void {
   if (youDone.value) youTimer.stop();
 }
 
-const aiIdx = ref(0);
+const aiPairs = ref(0); // fully handled requests (client + reply shown)
+const aiClientTyping = ref(false); // client is writing (~3s)
+const aiCurClient = ref(false); // current client message shown, reply pending
+const aiAiTyping = ref(false); // AI is writing its reply (~1.5s)
 const aiMs = ref(0);
 const aiRunning = ref(false);
 const aiTimer = makeTimer(aiMs);
-let aiStep: number | undefined;
-const aiDone = computed(() => aiIdx.value >= TOTAL && !aiRunning.value);
-const aiShown = computed(() => leads.slice(0, aiIdx.value));
+let aiTimeout: number | undefined;
+const aiDone = computed(() => aiPairs.value >= TOTAL && !aiRunning.value);
+const aiShown = computed(() => leads.slice(0, aiPairs.value));
+const aiCurrent = computed<Lead | undefined>(() => leads[aiPairs.value]);
+
+function processLead(): void {
+  if (aiPairs.value >= TOTAL) {
+    aiTimer.stop();
+    aiRunning.value = false;
+    return;
+  }
+  aiClientTyping.value = true; // client writes for ~3s
+  aiTimeout = window.setTimeout(() => {
+    aiClientTyping.value = false;
+    aiCurClient.value = true; // client message lands
+    aiAiTyping.value = true; // AI replies in ~1.5s
+    aiTimeout = window.setTimeout(() => {
+      aiAiTyping.value = false;
+      aiCurClient.value = false;
+      aiPairs.value += 1; // pair done, reply shown
+      processLead();
+    }, 1500);
+  }, 3000);
+}
 
 function runAi(): void {
   if (aiRunning.value) return;
-  aiIdx.value = 0;
+  aiPairs.value = 0;
   aiMs.value = 0;
+  aiClientTyping.value = false;
+  aiCurClient.value = false;
+  aiAiTyping.value = false;
   aiRunning.value = true;
   aiTimer.start();
-  aiStep = window.setInterval(() => {
-    aiIdx.value += 1;
-    if (aiIdx.value >= TOTAL) {
-      if (aiStep) clearInterval(aiStep);
-      aiStep = undefined;
-      aiTimer.stop();
-      aiRunning.value = false;
-    }
-  }, 230);
+  processLead();
 }
 
 // ---------- Scenario 2: ad creative ----------
@@ -225,7 +244,7 @@ onUnmounted(() => {
   aiTimer.stop();
   crTimer.stop();
   crAiTimer.stop();
-  if (aiStep) clearInterval(aiStep);
+  if (aiTimeout) clearTimeout(aiTimeout);
   if (crAiStep) clearInterval(crAiStep);
 });
 </script>
@@ -393,13 +412,13 @@ onUnmounted(() => {
               <div class="flex items-baseline justify-between">
                 <h3 class="text-lg font-medium sm:text-xl">ИИ — автоматически</h3>
                 <span class="text-sm tabular-nums text-white/60"
-                  >{{ aiIdx }} / {{ TOTAL }} · {{ seconds(aiMs) }} с</span
+                  >{{ aiPairs }} / {{ TOTAL }} · {{ seconds(aiMs) }} с</span
                 >
               </div>
               <div
                 class="mt-4 flex h-64 flex-col gap-2 overflow-y-auto rounded-xl bg-white/5 p-3 text-sm"
               >
-                <template v-if="aiIdx > 0">
+                <template v-if="aiRunning || aiPairs > 0">
                   <template v-for="(lead, i) in aiShown" :key="'a' + i">
                     <p
                       class="max-w-[85%] self-start rounded-2xl rounded-bl-sm bg-white/10 px-3 py-2 text-white/90"
@@ -413,6 +432,27 @@ onUnmounted(() => {
                       {{ lead.reply }}
                     </p>
                   </template>
+                  <!-- current client: typing, then message + AI typing -->
+                  <p
+                    v-if="aiClientTyping && aiCurrent"
+                    class="max-w-[85%] self-start rounded-2xl rounded-bl-sm bg-white/10 px-3 py-2 text-white/90"
+                  >
+                    <span class="mb-0.5 block text-xs text-white/50">{{ aiCurrent.from }}</span>
+                    <span class="typing" aria-label="печатает"><span /><span /><span /></span>
+                  </p>
+                  <p
+                    v-if="aiCurClient && aiCurrent"
+                    class="max-w-[85%] self-start rounded-2xl rounded-bl-sm bg-white/10 px-3 py-2 text-white/90"
+                  >
+                    <span class="mb-0.5 block text-xs text-white/50">{{ aiCurrent.from }}</span>
+                    {{ aiCurrent.text }}
+                  </p>
+                  <p
+                    v-if="aiAiTyping"
+                    class="max-w-[85%] self-end rounded-2xl rounded-br-sm bg-peach-strong px-3 py-2 text-graphite"
+                  >
+                    <span class="typing" aria-label="печатает"><span /><span /><span /></span>
+                  </p>
                 </template>
                 <p v-else class="m-auto max-w-[16rem] text-center text-sm text-white/55">
                   Нажмите «Запустить ИИ» — он ответит на все {{ TOTAL }} заявок сам.
