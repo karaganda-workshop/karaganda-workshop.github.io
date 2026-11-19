@@ -3,11 +3,14 @@ import { onBeforeUnmount, onMounted } from "vue";
 import HeroSection from "@/components/HeroSection.vue";
 import PageSections from "@/components/PageSections.vue";
 import SiteHeader from "@/components/SiteHeader.vue";
+import { initSectionTracking } from "@/lib/sectionViews";
 
 // Fade-and-rise any [data-reveal] element as it scrolls into view.
 let observer: IntersectionObserver | null = null;
 
 onMounted(() => {
+  initSectionTracking();
+
   const nodes = document.querySelectorAll<HTMLElement>("[data-reveal]");
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     nodes.forEach((node) => node.classList.add("is-in"));

@@ -6,7 +6,7 @@ import { trackEvent } from "@/lib/analytics";
 </script>
 
 <template>
-  <section class="relative overflow-hidden bg-stone text-graphite">
+  <section class="relative overflow-hidden bg-stone text-graphite" data-section="hero">
     <div class="relative mx-auto max-w-6xl border-x border-rule px-6 pt-14 sm:pt-20">
       <span class="hero-plus -left-[5px] top-0" aria-hidden="true" />
       <span class="hero-plus -right-[5px] top-0" aria-hidden="true" />

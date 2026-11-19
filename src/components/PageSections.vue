@@ -8,7 +8,7 @@ import { afterSeminar, bonuses, facts, partners, price, speakers, tools } from "
 </script>
 
 <template>
-  <section class="overflow-x-clip bg-stone text-graphite" aria-label="Когда и где">
+  <section class="overflow-x-clip bg-stone text-graphite" aria-label="Когда и где" data-section="facts">
     <div class="relative mx-auto max-w-6xl border-x border-rule px-4 py-12 sm:px-6 sm:py-16">
       <ul class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <li
@@ -32,7 +32,7 @@ import { afterSeminar, bonuses, facts, partners, price, speakers, tools } from "
     <div class="border-t border-rule" />
   </section>
 
-  <section class="overflow-x-clip bg-stone text-graphite" aria-labelledby="partners-title">
+  <section class="overflow-x-clip bg-stone text-graphite" aria-labelledby="partners-title" data-section="partners">
     <div class="relative mx-auto max-w-6xl border-x border-rule">
       <TextAnimate
         id="partners-title"
@@ -73,7 +73,7 @@ import { afterSeminar, bonuses, facts, partners, price, speakers, tools } from "
     <div class="border-t border-rule" />
   </section>
 
-  <section class="overflow-x-clip bg-stone text-graphite" aria-labelledby="shift-title">
+  <section class="overflow-x-clip bg-stone text-graphite" aria-labelledby="shift-title" data-section="shift">
     <div class="relative mx-auto max-w-6xl border-x border-rule">
       <TextAnimate
         id="shift-title"
@@ -151,7 +151,7 @@ import { afterSeminar, bonuses, facts, partners, price, speakers, tools } from "
 
   <LeadMagnet />
 
-  <section class="overflow-x-clip bg-stone text-graphite" aria-labelledby="tools-title">
+  <section class="overflow-x-clip bg-stone text-graphite" aria-labelledby="tools-title" data-section="tools">
     <div class="relative mx-auto max-w-6xl border-x border-rule">
       <TextAnimate
         id="tools-title"
@@ -218,6 +218,7 @@ import { afterSeminar, bonuses, facts, partners, price, speakers, tools } from "
 
   <section
     id="results"
+    data-section="results"
     class="scroll-mt-14 overflow-x-clip bg-stone text-graphite"
     aria-labelledby="after-title"
   >
@@ -258,6 +259,7 @@ import { afterSeminar, bonuses, facts, partners, price, speakers, tools } from "
 
   <section
     id="speakers"
+    data-section="speakers"
     class="scroll-mt-14 overflow-x-clip bg-stone text-graphite"
     aria-labelledby="speakers-title"
   >
@@ -309,6 +311,7 @@ import { afterSeminar, bonuses, facts, partners, price, speakers, tools } from "
 
   <section
     id="price"
+    data-section="price"
     class="scroll-mt-14 overflow-x-clip bg-stone text-graphite"
     aria-labelledby="price-title"
   >

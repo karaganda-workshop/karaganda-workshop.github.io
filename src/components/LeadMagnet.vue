@@ -293,7 +293,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section class="overflow-x-clip bg-stone text-graphite" aria-labelledby="demo-title">
+  <section class="overflow-x-clip bg-stone text-graphite" aria-labelledby="demo-title" data-section="demo">
     <div class="relative mx-auto max-w-6xl border-x border-rule">
       <TextAnimate
         id="demo-title"
