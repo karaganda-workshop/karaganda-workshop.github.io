@@ -2,6 +2,7 @@
 import BookLink from "@/components/BookLink.vue";
 import HeroScene from "@/components/HeroScene.vue";
 import TextAnimate from "@/components/ui/TextAnimate.vue";
+import { trackEvent } from "@/lib/analytics";
 </script>
 
 <template>
@@ -42,6 +43,7 @@ import TextAnimate from "@/components/ui/TextAnimate.vue";
           <a
             href="#results"
             class="inline-flex h-14 items-center rounded-full border border-rule bg-snow px-8 text-base font-semibold text-graphite transition-colors duration-200 hover:border-graphite/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-graphite focus-visible:ring-offset-2 focus-visible:ring-offset-stone"
+            @click="trackEvent('click_benefits')"
           >
             Что я получу
           </a>

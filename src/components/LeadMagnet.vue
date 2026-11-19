@@ -10,6 +10,7 @@
  */
 import { computed, onUnmounted, reactive, ref } from "vue";
 import BookLink from "@/components/BookLink.vue";
+import { trackEvent } from "@/lib/analytics";
 import ClaudeChat from "@/components/ClaudeChat.vue";
 import WhatsAppChat from "@/components/WhatsAppChat.vue";
 import TextAnimate from "@/components/ui/TextAnimate.vue";
@@ -262,6 +263,7 @@ const activeRunning = computed(() =>
 
 function startChats(): void {
   if (activeRunning.value) return;
+  trackEvent("start_chats", { scenario: mode.value });
   if (mode.value === "leads") {
     startLeadsLeft();
     leadsAi.start();

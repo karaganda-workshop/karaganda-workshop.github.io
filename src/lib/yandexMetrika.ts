@@ -65,3 +65,12 @@ export function reachRegistrationGoal(location: string): void {
   if (!metrikaEnabled || !window.ym) return;
   window.ym(Number(COUNTER_ID), "reachGoal", "registration", { button_location: location });
 }
+
+/**
+ * Generic engagement goal (e.g. start_chats, click_benefits). Create a
+ * matching "JavaScript-событие" goal in Metrika with the same id to count it.
+ */
+export function reachMetrikaGoal(goal: string, params?: Record<string, unknown>): void {
+  if (!metrikaEnabled || !window.ym) return;
+  window.ym(Number(COUNTER_ID), "reachGoal", goal, params);
+}

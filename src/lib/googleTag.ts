@@ -50,3 +50,9 @@ export function trackGoogleLead(location: string): void {
     button_location: location,
   });
 }
+
+/** Generic GA4 engagement event (e.g. start_chats, click_benefits). */
+export function trackGoogleEvent(name: string, params?: Record<string, unknown>): void {
+  if (!googleTagEnabled || !window.gtag) return;
+  window.gtag("event", name, params ?? {});
+}
