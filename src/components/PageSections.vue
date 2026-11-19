@@ -116,27 +116,25 @@ import { afterSeminar, bonuses, facts, partners, price, speakers, tools } from "
           </div>
         </div>
         <div class="mt-3 grid gap-3 sm:mt-4 sm:gap-4 md:grid-cols-2">
-          <div data-reveal class="rounded-2xl border border-rule bg-snow/70 p-5 sm:p-6">
-            <p class="text-2xl leading-tight font-semibold text-graphite sm:text-3xl">
-              Пока — вручную
+          <div data-reveal class="flex flex-col rounded-2xl border border-rule bg-snow/70 p-5 sm:p-6">
+            <p class="text-4xl leading-none font-semibold text-peach-ink sm:text-5xl">в 21 раз</p>
+            <p class="mt-3 text-sm leading-snug text-graphite/75 sm:text-base">
+              выше шанс довести заявку до сделки, если ответить за 5 минут, а не за 30. ИИ отвечает
+              за секунды и круглосуточно.
             </p>
-            <p class="mt-2 text-sm leading-normal text-quiet sm:text-base">
-              Большинство местного бизнеса всё ещё теряет заявки и тратит часы на рутину, которую
-              давно можно поручить инструментам.
-            </p>
+            <p class="mt-3 text-xs text-quiet">По данным Harvard Business Review, 2011</p>
           </div>
           <div
             data-reveal
             data-delay="80"
-            class="rounded-2xl border border-rule bg-snow/70 p-5 sm:p-6"
+            class="flex flex-col rounded-2xl border border-rule bg-snow/70 p-5 sm:p-6"
           >
-            <p class="text-2xl leading-tight font-semibold text-graphite sm:text-3xl">
-              Каждый день на счету
+            <p class="text-4xl leading-none font-semibold text-peach-ink sm:text-5xl">60–70%</p>
+            <p class="mt-3 text-sm leading-snug text-graphite/75 sm:text-base">
+              рабочего времени на рутине ИИ уже может взять на себя — освобождая людей для продаж и
+              клиентов.
             </p>
-            <p class="mt-2 text-sm leading-normal text-quiet sm:text-base">
-              Конкуренты, которые настроили рекламу и автоматизацию раньше, платят за клиента меньше
-              и растут быстрее.
-            </p>
+            <p class="mt-3 text-xs text-quiet">По данным McKinsey, 2023</p>
           </div>
         </div>
         <div data-reveal class="mt-10 flex justify-center">
