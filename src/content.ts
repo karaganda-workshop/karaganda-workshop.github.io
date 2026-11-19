@@ -132,7 +132,7 @@ export const speakers: Speaker[] = [
 ];
 
 export const price = {
-  amount: "15\u00a0000",
+  amount: "10\u00a0000",
   unit: "с человека",
   note: "Один билет на бизнес-семинар. Бонусы уже входят в эту сумму.",
   included: [

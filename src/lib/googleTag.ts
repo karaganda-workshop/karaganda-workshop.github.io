@@ -45,7 +45,7 @@ export function initGoogleTag(): void {
 export function trackGoogleLead(location: string): void {
   if (!googleTagEnabled || !window.gtag) return;
   window.gtag("event", "generate_lead", {
-    value: 15000,
+    value: 10000,
     currency: "KZT",
     button_location: location,
   });
