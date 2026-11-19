@@ -10,7 +10,7 @@
  */
 import { computed, onUnmounted, reactive, ref } from "vue";
 import BookLink from "@/components/BookLink.vue";
-import ChatThread from "@/components/ChatThread.vue";
+import ClaudeChat from "@/components/ClaudeChat.vue";
 import WhatsAppChat from "@/components/WhatsAppChat.vue";
 import TextAnimate from "@/components/ui/TextAnimate.vue";
 
@@ -365,14 +365,15 @@ onUnmounted(() => {
               idle="Запустите чаты и отвечайте клиенту сами — как в жизни."
               @send="sendLeadsLeft"
             />
-            <!-- creative: approval chat with the marketer -->
-            <ChatThread
+            <!-- creative: WhatsApp approval chat with the marketer -->
+            <WhatsAppChat
               v-else
               class="mt-4"
-              theme="light"
+              contact="Руслан"
               :messages="creativeHuman.shown"
               :typing="creativeHuman.typing"
               :started="creativeHuman.running"
+              :interactive="false"
               idle="Здесь согласование креатива с маркетологом."
             />
           </div>
@@ -381,16 +382,11 @@ onUnmounted(() => {
           <div
             data-reveal
             data-delay="100"
-            class="flex flex-col rounded-2xl p-5 sm:p-6"
-            :class="mode === 'leads' ? 'border border-rule bg-snow' : 'bg-graphite text-white'"
+            class="flex flex-col rounded-2xl border border-rule bg-snow p-5 sm:p-6"
           >
             <div class="flex items-baseline justify-between">
               <h3 class="text-lg font-medium sm:text-xl">ИИ — автоматически</h3>
-              <span
-                class="text-sm tabular-nums"
-                :class="mode === 'leads' ? 'text-quiet' : 'text-white/60'"
-                >{{ seconds(ai.ms) }} с</span
-              >
+              <span class="text-sm tabular-nums text-quiet">{{ seconds(ai.ms) }} с</span>
             </div>
             <WhatsAppChat
               v-if="mode === 'leads'"
@@ -402,10 +398,10 @@ onUnmounted(() => {
               :interactive="false"
               idle="Здесь того же клиента обслуживает ИИ."
             />
-            <ChatThread
+            <!-- creative: Claude-styled assistant chat -->
+            <ClaudeChat
               v-else
               class="mt-4"
-              theme="dark"
               :messages="ai.shown"
               :typing="ai.typing"
               :started="ai.running"
