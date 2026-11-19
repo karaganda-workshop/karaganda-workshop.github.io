@@ -11,6 +11,8 @@ export interface Typing {
   name?: string;
 }
 
+import { nextTick, ref, watch } from "vue";
+
 const props = defineProps<{
   messages: ChatMsg[];
   typing: Typing | null;
@@ -18,6 +20,19 @@ const props = defineProps<{
   theme: "light" | "dark";
   idle: string;
 }>();
+
+const scroller = ref<HTMLElement | null>(null);
+
+// Keep the latest message in view so the user never has to scroll by hand.
+watch(
+  () => [props.messages.length, props.typing] as const,
+  () => {
+    nextTick(() => {
+      const el = scroller.value;
+      if (el) el.scrollTop = el.scrollHeight;
+    });
+  },
+);
 
 function bubble(side: "in" | "out"): string {
   if (props.theme === "dark") {
@@ -33,7 +48,8 @@ function bubble(side: "in" | "out"): string {
 
 <template>
   <div
-    class="flex h-72 flex-col gap-2 overflow-y-auto rounded-xl p-3 text-sm"
+    ref="scroller"
+    class="flex h-72 flex-col gap-2 overflow-y-auto scroll-smooth rounded-xl p-3 text-sm"
     :class="theme === 'dark' ? 'bg-white/5' : 'bg-stone/60'"
   >
     <template v-if="messages.length || started">
