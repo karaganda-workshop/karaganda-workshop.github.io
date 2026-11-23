@@ -2,6 +2,8 @@
 @import "@fontsource/roboto/500.css";
 @import "@fontsource/roboto/600.css";
 @import "@fontsource/roboto/400-italic.css";
+/* Variable Onest — geometric display face for the hero headline. */
+@import "@fontsource-variable/onest/wght.css";
 @import "tailwindcss";
 
 @theme {
@@ -22,13 +24,19 @@
   --color-peach-strong: #eea283;
   --color-peach-line: #efc3ac;
   --color-peach-ink: #9a4a2a;
+  /* Dark theme (GSAP-style): near-black page, layered surfaces, hairline edges. */
+  --color-coal: #0f0f0d;
+  --color-coal-surface: #191916;
+  --color-coal-raised: #242420;
+  --color-coal-line: #ffffff1a;
+  --color-coal-line-strong: #ffffff33;
   --font-sans: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 @layer base {
   html {
-    /* Light-only design: stop browsers' auto dark mode from inverting colors. */
-    color-scheme: only light;
+    /* Dark design: native UI (scrollbars, form controls) follows the dark theme. */
+    color-scheme: dark;
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -41,8 +49,8 @@
   }
 
   body {
-    background: var(--color-paper);
-    color: var(--color-ink);
+    background: var(--color-coal);
+    color: var(--color-stone);
     font-family: var(--font-sans);
     overflow-x: hidden;
   }
@@ -119,9 +127,9 @@
   height: 9px;
   translate: 0 -50%;
   background:
-    linear-gradient(var(--color-graphite), var(--color-graphite)) center / 100% 1px no-repeat,
-    linear-gradient(var(--color-graphite), var(--color-graphite)) center / 1px 100% no-repeat;
-  opacity: 0.45;
+    linear-gradient(var(--color-stone), var(--color-stone)) center / 100% 1px no-repeat,
+    linear-gradient(var(--color-stone), var(--color-stone)) center / 1px 100% no-repeat;
+  opacity: 0.28;
 }
 
 .hero-plus-bottom {
@@ -138,7 +146,7 @@
   background-size: 100% var(--mark-thickness);
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
-  color: var(--color-graphite);
+  color: var(--color-stone);
   font-style: italic;
   font-weight: 400;
 }

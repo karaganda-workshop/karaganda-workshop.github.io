@@ -293,8 +293,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section class="overflow-x-clip bg-stone text-graphite" aria-labelledby="demo-title" data-section="demo">
-    <div class="relative mx-auto max-w-6xl border-x border-rule">
+  <section class="overflow-x-clip bg-coal text-stone" aria-labelledby="demo-title" data-section="demo">
+    <div class="relative mx-auto max-w-6xl border-x border-coal-line">
       <TextAnimate
         id="demo-title"
         as="h2"
@@ -306,7 +306,7 @@ onUnmounted(() => {
         Почувствуйте реальную разницу на практике
       </TextAnimate>
       <p
-        class="rise px-4 pb-6 text-base leading-relaxed text-graphite/70 sm:px-6 sm:pb-8 sm:text-lg"
+        class="rise px-4 pb-6 text-base leading-relaxed text-stone/70 sm:px-6 sm:pb-8 sm:text-lg"
       >
         {{
           mode === "leads"
@@ -318,7 +318,7 @@ onUnmounted(() => {
       <div class="px-4 pb-10 sm:px-6">
         <div
           role="tablist"
-          class="inline-flex gap-1 rounded-full border border-rule bg-snow p-1 text-sm font-medium"
+          class="inline-flex gap-1 rounded-full border border-coal-line bg-coal-surface p-1 text-sm font-medium"
         >
           <button
             v-for="tab in [
@@ -331,7 +331,7 @@ onUnmounted(() => {
             :aria-selected="mode === tab.id"
             class="rounded-full px-4 py-2 transition-colors"
             :class="
-              mode === tab.id ? 'bg-graphite text-white' : 'text-graphite/70 hover:text-graphite'
+              mode === tab.id ? 'bg-stone text-coal' : 'text-stone/60 hover:text-stone'
             "
             @click="mode = tab.id as Mode"
           >
@@ -340,15 +340,15 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <div class="border-t border-rule px-4 py-12 sm:px-6 sm:py-16">
+      <div class="border-t border-coal-line px-4 py-12 sm:px-6 sm:py-16">
         <div class="grid gap-3 sm:gap-4 lg:grid-cols-2">
           <!-- LEFT: you / human -->
-          <div data-reveal class="flex flex-col rounded-2xl border border-rule bg-snow p-5 sm:p-6">
+          <div data-reveal class="flex flex-col rounded-2xl border border-coal-line bg-coal-surface p-5 sm:p-6">
             <div class="flex items-baseline justify-between">
               <h3 class="text-lg font-medium sm:text-xl">
                 {{ mode === "leads" ? "Вы — отвечаете сами" : "Вы и маркетолог Руслан" }}
               </h3>
-              <span class="text-sm tabular-nums text-quiet"
+              <span class="text-sm tabular-nums text-stone/55"
                 >{{ seconds(mode === "leads" ? lhMs : creativeHuman.ms) }} с</span
               >
             </div>
@@ -384,11 +384,11 @@ onUnmounted(() => {
           <div
             data-reveal
             data-delay="100"
-            class="flex flex-col rounded-2xl border border-rule bg-snow p-5 sm:p-6"
+            class="flex flex-col rounded-2xl border border-coal-line bg-coal-surface p-5 sm:p-6"
           >
             <div class="flex items-baseline justify-between">
               <h3 class="text-lg font-medium sm:text-xl">ИИ — автоматически</h3>
-              <span class="text-sm tabular-nums text-quiet">{{ seconds(ai.ms) }} с</span>
+              <span class="text-sm tabular-nums text-stone/55">{{ seconds(ai.ms) }} с</span>
             </div>
             <WhatsAppChat
               v-if="mode === 'leads'"
@@ -416,7 +416,7 @@ onUnmounted(() => {
           <button
             type="button"
             :disabled="activeRunning"
-            class="h-12 rounded-full bg-graphite px-8 text-base font-semibold text-white shadow-2xl transition-opacity hover:opacity-90 disabled:opacity-50"
+            class="h-12 rounded-full bg-stone px-8 text-base font-semibold text-coal shadow-2xl transition-opacity hover:opacity-90 disabled:opacity-50"
             @click="startChats"
           >
             {{ activeRunning ? "Чаты идут…" : summary ? "Запустить заново" : "Запустить чаты" }}
@@ -425,10 +425,10 @@ onUnmounted(() => {
 
         <div
           v-if="summary"
-          class="mt-6 flex flex-col items-center gap-4 rounded-2xl border border-peach-line bg-peach-soft/50 px-5 py-6 text-center sm:mt-8"
+          class="mt-6 flex flex-col items-center gap-4 rounded-2xl border border-peach-strong/30 bg-peach-strong/[0.08] px-5 py-6 text-center sm:mt-8"
         >
-          <p class="max-w-2xl text-lg font-medium text-graphite sm:text-xl">{{ summary.text }}</p>
-          <BookLink variant="dark" offset="stone" location="lead-magnet" class="h-14 px-8 text-base"
+          <p class="max-w-2xl text-lg font-medium text-stone sm:text-xl">{{ summary.text }}</p>
+          <BookLink variant="light" offset="night" location="lead-magnet" class="h-14 px-8 text-base"
             >Хочу так же — записаться</BookLink
           >
         </div>
@@ -436,6 +436,6 @@ onUnmounted(() => {
       <span class="hero-plus hero-plus-bottom -left-[5px] bottom-0" aria-hidden="true" />
       <span class="hero-plus hero-plus-bottom -right-[5px] bottom-0" aria-hidden="true" />
     </div>
-    <div class="border-t border-rule" />
+    <div class="border-t border-coal-line" />
   </section>
 </template>
